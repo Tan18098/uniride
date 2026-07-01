@@ -1,1654 +1,502 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UniRide Campus</title>
-  <style>
-    :root {
-      --primary: #0f766e;
-      --primary-dark: #0b5f59;
-      --accent: #f59e0b;
-      --bg: #f4f7f6;
-      --card: #ffffff;
-      --text: #16211f;
-      --muted: #66736f;
-      --line: #dce6e3;
-      --danger: #dc2626;
-      --success: #16a34a;
-      --warning: #f59e0b;
-      --shadow: 0 18px 45px rgba(15, 118, 110, .16);
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UniRide Campus</title>
+    <link rel="stylesheet" href="css/uniride.css" />
+  </head>
+  <body>
+    <div class="phone">
+      <div id="smsToast" class="toast"></div>
 
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #d8efec, #f8fbfa);
-      color: var(--text);
-    }
-
-    button, input, select { font: inherit; }
-    button { border: 0; cursor: pointer; }
-    a { color: inherit; }
-
-    .phone {
-      width: min(100%, 430px);
-      min-height: 100vh;
-      margin: 0 auto;
-      background: var(--bg);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 60px rgba(15, 23, 42, .16);
-    }
-
-    .view { min-height: 100vh; display: none; flex-direction: column; }
-    .view.active { display: flex; }
-    .screen { flex: 1; padding: 22px; overflow-y: auto; padding-bottom: 94px; }
-    .center { justify-content: center; text-align: center; padding: 30px; }
-    .stack { display: grid; gap: 14px; }
-    .row { display: flex; align-items: center; gap: 12px; }
-    .between { justify-content: space-between; }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-    h1, h2, h3, p { margin-top: 0; }
-    h1 { font-size: 32px; line-height: 1.08; margin-bottom: 10px; }
-    h2 { font-size: 24px; margin-bottom: 8px; }
-    h3 { font-size: 16px; margin-bottom: 8px; }
-    p { color: var(--muted); line-height: 1.55; }
-
-    .brand-mark {
-      width: 92px;
-      height: 92px;
-      border-radius: 28px;
-      margin: 0 auto 22px;
-      background: var(--primary);
-      color: white;
-      display: grid;
-      place-items: center;
-      font-size: 34px;
-      font-weight: 900;
-      box-shadow: var(--shadow);
-    }
-
-    .avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      background: #e7f5f2;
-      color: var(--primary);
-      font-weight: 900;
-    }
-
-    .btn {
-      width: 100%;
-      min-height: 48px;
-      border-radius: 14px;
-      font-weight: 800;
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 10px 24px rgba(15, 118, 110, .24);
-    }
-
-    .btn:hover { background: var(--primary-dark); }
-    .btn.secondary {
-      background: white;
-      color: var(--primary);
-      border: 1px solid var(--line);
-      box-shadow: none;
-    }
-
-    .btn.danger { background: var(--danger); }
-    .btn.warning { background: var(--warning); }
-    .btn.small {
-      width: auto;
-      min-height: 38px;
-      padding: 0 14px;
-      border-radius: 12px;
-      font-size: 13px;
-    }
-
-    .btn:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 8px 22px rgba(15, 23, 42, .05);
-    }
-
-    .soft {
-      background: #ecf8f5;
-      border-color: #cdebe5;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 800;
-      color: #53615e;
-      text-transform: uppercase;
-      margin-bottom: 7px;
-    }
-
-    input, select {
-      width: 100%;
-      min-height: 46px;
-      border-radius: 13px;
-      border: 1px solid var(--line);
-      padding: 11px 12px;
-      background: white;
-      color: var(--text);
-      outline: none;
-    }
-
-    input:focus, select:focus { border-color: var(--primary); }
-
-    .error, .success {
-      display: none;
-      border-radius: 14px;
-      padding: 12px;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .success {
-      background: #dcfce7;
-      color: #166534;
-      border: 1px solid #86efac;
-    }
-
-    .error.show, .success.show { display: block; }
-
-    .topbar {
-      background: var(--primary);
-      color: white;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 8px 22px rgba(15, 118, 110, .18);
-    }
-
-    .topbar p {
-      color: rgba(255,255,255,.78);
-      margin: 3px 0 0;
-      font-size: 12px;
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .map {
-      min-height: 205px;
-      border-radius: 22px;
-      overflow: hidden;
-      position: relative;
-      background:
-        linear-gradient(23deg, transparent 44%, rgba(255,255,255,.74) 45%, rgba(255,255,255,.74) 48%, transparent 49%),
-        linear-gradient(90deg, transparent 48%, rgba(255,255,255,.72) 49%, rgba(255,255,255,.72) 51%, transparent 52%),
-        linear-gradient(0deg, transparent 43%, rgba(255,255,255,.66) 44%, rgba(255,255,255,.66) 47%, transparent 48%),
-        #cae7df;
-      border: 1px solid #b7d9d1;
-    }
-
-    .map:before, .map:after {
-      content: "";
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      border: 5px solid white;
-      box-shadow: 0 8px 18px rgba(0,0,0,.18);
-    }
-
-    .map:before {
-      left: 70px;
-      top: 58px;
-      background: var(--success);
-    }
-
-    .map:after {
-      right: 80px;
-      bottom: 55px;
-      background: var(--danger);
-    }
-
-    .route {
-      position: absolute;
-      left: 88px;
-      top: 79px;
-      width: 180px;
-      height: 86px;
-      border-top: 5px dashed var(--primary);
-      border-right: 5px dashed var(--primary);
-      border-radius: 0 24px 0 0;
-    }
-
-    .car-dot {
-      position: absolute;
-      left: 155px;
-      top: 70px;
-      width: 42px;
-      height: 28px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: var(--primary);
-      color: white;
-      font-size: 12px;
-      font-weight: 900;
-      box-shadow: 0 10px 20px rgba(15, 118, 110, .3);
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 34px;
-      padding: 0 12px;
-      border-radius: 999px;
-      background: #e7f5f2;
-      color: var(--primary);
-      font-size: 13px;
-      font-weight: 800;
-      margin: 4px 5px 4px 0;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 5px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 900;
-      background: #e7f5f2;
-      color: var(--primary);
-      white-space: nowrap;
-    }
-
-    .badge.warn {
-      background: #fff7ed;
-      color: #c2410c;
-    }
-
-    .badge.dark {
-      background: #17211f;
-      color: white;
-    }
-
-    .price {
-      color: var(--primary);
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    .reward-hero {
-      background: linear-gradient(135deg, #103d39, #0f766e 58%, #f59e0b);
-      color: white;
-      border: 0;
-    }
-
-    .reward-hero p,
-    .reward-hero .muted {
-      color: rgba(255,255,255,.78);
-    }
-
-    .progress {
-      height: 10px;
-      overflow: hidden;
-      border-radius: 999px;
-      background: rgba(255,255,255,.28);
-    }
-
-    .progress span {
-      display: block;
-      height: 100%;
-      width: var(--progress, 0%);
-      border-radius: inherit;
-      background: white;
-    }
-
-    .reward-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .reward-tile {
-      display: grid;
-      gap: 6px;
-      min-height: 106px;
-      align-content: space-between;
-      border-radius: 16px;
-      padding: 12px;
-      background: #f8fbfa;
-      border: 1px solid var(--line);
-    }
-
-    .reward-tile strong {
-      font-size: 14px;
-      line-height: 1.25;
-    }
-
-    .reward-tile small {
-      color: var(--muted);
-      line-height: 1.35;
-    }
-
-    .task-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .task-row:last-child { border-bottom: 0; }
-
-    .muted { color: var(--muted); }
-    .strong { font-weight: 900; }
-    .mini { font-size: 12px; }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: white;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .tabs button {
-      background: white;
-      padding: 14px 8px;
-      font-weight: 900;
-      color: #8a9693;
-      border-bottom: 3px solid transparent;
-    }
-
-    .tabs button.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
-    }
-
-    .nav {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: white;
-      border-top: 1px solid var(--line);
-      display: none;
-      justify-content: space-around;
-      padding: 9px 8px 12px;
-      z-index: 20;
-    }
-
-    .nav.show { display: flex; }
-
-    .nav button {
-      background: transparent;
-      color: #8a9693;
-      display: grid;
-      gap: 3px;
-      justify-items: center;
-      font-size: 11px;
-      font-weight: 900;
-      min-width: 70px;
-    }
-
-    .nav button.active { color: var(--primary); }
-    .nav .ico { font-size: 20px; }
-
-    .modal {
-      display: none;
-      position: absolute;
-      inset: 0;
-      z-index: 50;
-      background: rgba(8, 20, 18, .62);
-      align-items: flex-end;
-      justify-content: center;
-      padding: 18px;
-    }
-
-    .modal.centered { align-items: center; }
-    .modal.show { display: flex; }
-
-    .modal-box {
-      width: 100%;
-      background: white;
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: 0 30px 80px rgba(0,0,0,.25);
-      max-height: 86vh;
-      overflow-y: auto;
-    }
-
-    .modal-box.center { text-align: center; }
-
-    .toast {
-      display: none;
-      position: absolute;
-      left: 14px;
-      right: 14px;
-      top: 14px;
-      z-index: 60;
-      background: #111827;
-      color: white;
-      border-radius: 18px;
-      padding: 13px;
-      box-shadow: 0 18px 40px rgba(0,0,0,.26);
-      font-size: 13px;
-    }
-
-    .toast.show { display: block; }
-  </style>
-</head>
-<body>
-  <div class="phone">
-    <div id="smsToast" class="toast"></div>
-
-    <section id="welcomeView" class="view active center">
-      <div>
-        <div class="brand-mark">UR</div>
-        <h1 data-i18n="appName">UniRide Campus</h1>
-        <p data-i18n="intro">Safe, affordable campus rides for verified UniMAP students and staff.</p>
-      </div>
-
-      <div class="stack">
-        <button class="btn" onclick="showView('loginView')" data-i18n="getStarted">Get Started</button>
-        <button class="btn secondary" onclick="quickDemo()" data-i18n="demoLogin">Demo Login</button>
-        <button class="btn secondary" onclick="toggleLang()" id="langBtn">中文</button>
-      </div>
-    </section>
-
-    <section id="loginView" class="view">
-      <div class="screen stack">
-        <button class="btn secondary small" onclick="showView('welcomeView')" data-i18n="back">Back</button>
-
+      <section id="welcomeView" class="view active center">
         <div>
-          <h2 data-i18n="verifyTitle">Account Verification</h2>
-          <p data-i18n="verifyDesc">Use a valid 9-digit UniMAP student ID or student email.</p>
+          <div class="brand-mark">UR</div>
+          <h1 data-i18n="appName">UniRide Campus</h1>
+          <p data-i18n="intro">
+            Safe, affordable campus rides for verified UniMAP students and
+            staff.
+          </p>
         </div>
 
-        <div id="loginError" class="error"></div>
-
-        <form class="stack" onsubmit="requestOtp(event)">
-          <div>
-            <label data-i18n="fullName">Full Name</label>
-            <input id="nameInput" required placeholder="Alex Lim" />
-          </div>
-
-          <div>
-            <label data-i18n="gender">Gender</label>
-            <select id="genderInput">
-              <option>Male</option>
-              <option>Female</option>
-            </select>
-          </div>
-
-          <div>
-            <label data-i18n="phone">Malaysia Phone</label>
-            <input id="phoneInput" required placeholder="60123456789" />
-          </div>
-
-          <div>
-            <label data-i18n="studentId">Student ID or Email</label>
-            <input id="credentialInput" required placeholder="261234567" />
-          </div>
-
-          <label class="row" style="text-transform:none">
-            <input id="okuInput" type="checkbox" style="width:18px;min-height:18px" />
-            <span data-i18n="oku">Register as OKU special care member</span>
-          </label>
-
-          <button class="btn" type="submit" data-i18n="secureLogin">Secure Login</button>
-        </form>
-      </div>
-    </section>
-
-    <section id="appView" class="view">
-      <header class="topbar">
-        <div>
-          <strong>UniRide Campus</strong>
-          <p id="headerSubtitle">Verified campus mobility portal</p>
+        <div class="stack">
+          <button
+            class="btn"
+            onclick="showView('loginView')"
+            data-i18n="getStarted"
+          >
+            Get Started
+          </button>
+          <button
+            class="btn secondary"
+            onclick="quickDemo()"
+            data-i18n="demoLogin"
+          >
+            Demo Login
+          </button>
+          <button class="btn secondary" onclick="toggleLang()" id="langBtn">
+            中文
+          </button>
         </div>
+      </section>
 
-        <div class="top-actions">
-          <button class="btn secondary small" onclick="toggleLang()" id="langBtnApp">中文</button>
-          <button class="btn danger small" onclick="openSos()">SOS</button>
+      <section id="loginView" class="view">
+        <div class="screen stack">
+          <button
+            class="btn secondary small"
+            onclick="showView('welcomeView')"
+            data-i18n="back"
+          >
+            Back
+          </button>
+
+          <div>
+            <h2 data-i18n="verifyTitle">Account Verification</h2>
+            <p data-i18n="verifyDesc">
+              Use a valid 9-digit UniMAP student ID or student email.
+            </p>
+          </div>
+
+          <div id="loginError" class="error"></div>
+
+          <form class="stack" onsubmit="requestOtp(event)">
+            <div>
+              <label data-i18n="fullName">Full Name</label>
+              <input id="nameInput" required placeholder="Alex Lim" />
+            </div>
+
+            <div>
+              <label data-i18n="gender">Gender</label>
+              <select id="genderInput">
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </div>
+
+            <div>
+              <label data-i18n="phone">Malaysia Phone</label>
+              <input id="phoneInput" required placeholder="60123456789" />
+            </div>
+
+            <div>
+              <label data-i18n="studentId">Student ID or Email</label>
+              <input id="credentialInput" required placeholder="261234567" />
+            </div>
+
+            <label class="row" style="text-transform: none">
+              <input
+                id="okuInput"
+                type="checkbox"
+                style="width: 18px; min-height: 18px"
+              />
+              <span data-i18n="oku">Register as OKU special care member</span>
+            </label>
+
+            <button class="btn" type="submit" data-i18n="secureLogin">
+              Secure Login
+            </button>
+          </form>
         </div>
-      </header>
+      </section>
 
-      <div id="homePage" class="app-page">
-        <div class="tabs">
-          <button id="offerTab" class="active" onclick="setFeed('offer')" data-i18n="findDrivers">Find Drivers</button>
-          <button id="requestTab" onclick="setFeed('request')" data-i18n="findPassengers">Find Passengers</button>
-        </div>
+      <section id="appView" class="view">
+        <header class="topbar">
+          <div>
+            <strong>UniRide Campus</strong>
+            <p id="headerSubtitle">Verified campus mobility portal</p>
+          </div>
 
-        <main class="screen stack">
-          <div class="card">
-            <div class="row between">
-              <div>
-                <h2 id="helloText">Hi</h2>
-                <p data-i18n="whereTo">Where are you heading today?</p>
+          <div class="top-actions">
+            <button
+              class="btn secondary small"
+              onclick="toggleLang()"
+              id="langBtnApp"
+            >
+              中文
+            </button>
+            <button class="btn danger small" onclick="openSos()">SOS</button>
+          </div>
+        </header>
+
+        <div id="homePage" class="app-page">
+          <div class="tabs">
+            <button
+              id="offerTab"
+              class="active"
+              onclick="setFeed('offer')"
+              data-i18n="findDrivers"
+            >
+              Find Drivers
+            </button>
+            <button
+              id="requestTab"
+              onclick="setFeed('request')"
+              data-i18n="findPassengers"
+            >
+              Find Passengers
+            </button>
+          </div>
+
+          <main class="screen stack">
+            <div class="card">
+              <div class="row between">
+                <div>
+                  <h2 id="helloText">Hi</h2>
+                  <p data-i18n="whereTo">Where are you heading today?</p>
+                </div>
+                <span class="badge">Verified Student</span>
               </div>
-              <span class="badge">Verified Student</span>
+
+              <div class="map">
+                <div class="route"></div>
+                <div class="car-dot">CAR</div>
+              </div>
+
+              <div style="margin-top: 12px">
+                <span class="chip">Library</span>
+                <span class="chip">Dormitory</span>
+                <span class="chip">Main Gate</span>
+                <span class="chip">KTM Arau</span>
+              </div>
+            </div>
+
+            <div id="bookingSuccess" class="success"></div>
+            <div
+              id="homeRewardStrip"
+              class="card reward-hero stack"
+              style="display: none"
+            >
+              <div class="row between">
+                <div>
+                  <span class="badge dark">Rewards</span>
+                  <h3 id="homeRewardLevel" style="margin: 8px 0 2px">
+                    Bronze Rider
+                  </h3>
+                  <p id="homeRewardNext" style="margin: 0">
+                    Earn points from every ride.
+                  </p>
+                </div>
+                <strong id="homeRewardPoints" class="price" style="color: white"
+                  >300 pts</strong
+                >
+              </div>
+              <button
+                class="btn secondary small"
+                onclick="showPage('profilePage')"
+                style="width: 100%"
+              >
+                View Rewards
+              </button>
+            </div>
+            <div id="ridesList" class="stack"></div>
+          </main>
+        </div>
+
+        <div id="postPage" class="app-page" style="display: none">
+          <main class="screen stack">
+            <div>
+              <h2 data-i18n="postJourney">Post Journey</h2>
+              <p data-i18n="postDesc">
+                Offer seats or request a ride around campus.
+              </p>
+            </div>
+
+            <div id="postError" class="error"></div>
+
+            <form class="card stack" onsubmit="createRide(event)">
+              <div>
+                <label data-i18n="postingAs">I am posting as</label>
+                <select id="rideType" onchange="toggleDriverFields()">
+                  <option value="offer">Driver - offering seats</option>
+                  <option value="request">Passenger - requesting ride</option>
+                </select>
+              </div>
+
+              <div
+                id="driverFields"
+                class="stack card soft"
+                style="box-shadow: none"
+              >
+                <h3 data-i18n="driverVerify">Driver Verification</h3>
+
+                <div>
+                  <label>Vehicle Plate</label>
+                  <input id="plateInput" placeholder="PBA 1234" />
+                </div>
+
+                <div>
+                  <label>Vehicle Model</label>
+                  <select id="modelInput">
+                    <option>Perodua Myvi</option>
+                    <option>Proton Saga</option>
+                    <option>Honda City</option>
+                    <option>Yamaha Y15ZR</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label>License Number</label>
+                  <input id="licenseInput" placeholder="050913070409" />
+                </div>
+
+                <label class="row" style="text-transform: none">
+                  <input
+                    id="femaleOnlyInput"
+                    type="checkbox"
+                    style="width: 18px; min-height: 18px"
+                  />
+                  Ladies-only ride
+                </label>
+              </div>
+
+              <div>
+                <label data-i18n="departure">Departure</label>
+                <select id="departureInput" onchange="updateFare()"></select>
+              </div>
+
+              <div>
+                <label data-i18n="destination">Destination</label>
+                <select id="destinationInput" onchange="updateFare()"></select>
+              </div>
+
+              <div>
+                <label data-i18n="pickup">Pickup Landmark</label>
+                <input
+                  id="pickupInput"
+                  required
+                  placeholder="Library main entrance"
+                />
+              </div>
+
+              <div>
+                <label data-i18n="departTime">Departure Time</label>
+                <input
+                  id="timeInput"
+                  type="datetime-local"
+                  required
+                  onchange="updateFare()"
+                  oninput="updateFare()"
+                />
+              </div>
+
+              <div class="row between card" style="box-shadow: none">
+                <span class="strong" data-i18n="fare">Calculated Fare</span>
+                <span id="fareText" class="price">RM 5</span>
+              </div>
+
+              <div>
+                <label data-i18n="seats">Seats</label>
+                <select id="seatsInput">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                </select>
+              </div>
+
+              <button class="btn" type="submit" data-i18n="publish">
+                Publish Journey
+              </button>
+            </form>
+          </main>
+        </div>
+
+        <div id="statusPage" class="app-page" style="display: none">
+          <main class="screen stack">
+            <div>
+              <h2 data-i18n="rideStatus">Ride Status</h2>
+              <p data-i18n="statusDesc">Track your confirmed campus ride.</p>
             </div>
 
             <div class="map">
               <div class="route"></div>
-              <div class="car-dot">CAR</div>
+              <div class="car-dot">3m</div>
             </div>
 
-            <div style="margin-top:12px">
-              <span class="chip">Library</span>
-              <span class="chip">Dormitory</span>
-              <span class="chip">Main Gate</span>
-              <span class="chip">KTM Arau</span>
-            </div>
-          </div>
-
-          <div id="bookingSuccess" class="success"></div>
-          <div id="homeRewardStrip" class="card reward-hero stack" style="display:none">
-            <div class="row between">
-              <div>
-                <span class="badge dark">Rewards</span>
-                <h3 id="homeRewardLevel" style="margin:8px 0 2px">Bronze Rider</h3>
-                <p id="homeRewardNext" style="margin:0">Earn points from every ride.</p>
-              </div>
-              <strong id="homeRewardPoints" class="price" style="color:white">300 pts</strong>
-            </div>
-            <button class="btn secondary small" onclick="showPage('profilePage')" style="width:100%">View Rewards</button>
-          </div>
-          <div id="ridesList" class="stack"></div>
-        </main>
-      </div>
-
-      <div id="postPage" class="app-page" style="display:none">
-        <main class="screen stack">
-          <div>
-            <h2 data-i18n="postJourney">Post Journey</h2>
-            <p data-i18n="postDesc">Offer seats or request a ride around campus.</p>
-          </div>
-
-          <div id="postError" class="error"></div>
-
-          <form class="card stack" onsubmit="createRide(event)">
-            <div>
-              <label data-i18n="postingAs">I am posting as</label>
-              <select id="rideType" onchange="toggleDriverFields()">
-                <option value="offer">Driver - offering seats</option>
-                <option value="request">Passenger - requesting ride</option>
-              </select>
-            </div>
-
-            <div id="driverFields" class="stack card soft" style="box-shadow:none">
-              <h3 data-i18n="driverVerify">Driver Verification</h3>
-
-              <div>
-                <label>Vehicle Plate</label>
-                <input id="plateInput" placeholder="PBA 1234" />
-              </div>
-
-              <div>
-                <label>Vehicle Model</label>
-                <select id="modelInput">
-                  <option>Perodua Myvi</option>
-                  <option>Proton Saga</option>
-                  <option>Honda City</option>
-                  <option>Yamaha Y15ZR</option>
-                </select>
-              </div>
-
-              <div>
-                <label>License Number</label>
-                <input id="licenseInput" placeholder="050913070409" />
-              </div>
-
-              <label class="row" style="text-transform:none">
-                <input id="femaleOnlyInput" type="checkbox" style="width:18px;min-height:18px" />
-                Ladies-only ride
-              </label>
-            </div>
-
-            <div>
-              <label data-i18n="departure">Departure</label>
-              <select id="departureInput" onchange="updateFare()"></select>
-            </div>
-
-            <div>
-              <label data-i18n="destination">Destination</label>
-              <select id="destinationInput" onchange="updateFare()"></select>
-            </div>
-
-            <div>
-              <label data-i18n="pickup">Pickup Landmark</label>
-              <input id="pickupInput" required placeholder="Library main entrance" />
-            </div>
-
-            <div>
-              <label data-i18n="departTime">Departure Time</label>
-              <input id="timeInput" type="datetime-local" required onchange="updateFare()" oninput="updateFare()" />
-            </div>
-
-            <div class="row between card" style="box-shadow:none">
-              <span class="strong" data-i18n="fare">Calculated Fare</span>
-              <span id="fareText" class="price">RM 5</span>
-            </div>
-
-            <div>
-              <label data-i18n="seats">Seats</label>
-              <select id="seatsInput">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-              </select>
-            </div>
-
-            <button class="btn" type="submit" data-i18n="publish">Publish Journey</button>
-          </form>
-        </main>
-      </div>
-
-      <div id="statusPage" class="app-page" style="display:none">
-        <main class="screen stack">
-          <div>
-            <h2 data-i18n="rideStatus">Ride Status</h2>
-            <p data-i18n="statusDesc">Track your confirmed campus ride.</p>
-          </div>
-
-          <div class="map">
-            <div class="route"></div>
-            <div class="car-dot">3m</div>
-          </div>
-
-          <div id="statusCard" class="card stack"></div>
-        </main>
-      </div>
-
-      <div id="historyPage" class="app-page" style="display:none">
-        <main class="screen stack">
-          <div>
-            <h2 data-i18n="history">Ride History</h2>
-            <p data-i18n="historyDesc">Your recent campus trips.</p>
-          </div>
-          <div id="historyList" class="stack"></div>
-        </main>
-      </div>
-
-      <div id="profilePage" class="app-page" style="display:none">
-        <main class="screen stack">
-          <div class="card" style="text-align:center">
-            <div class="brand-mark" style="width:76px;height:76px;font-size:26px;margin-bottom:12px">ID</div>
-            <h2 id="profileName">Student</h2>
-            <span class="badge">Verified Student</span>
-          </div>
-
-          <div class="card stack">
-            <div class="row between"><span>Email</span><strong id="profileEmail">-</strong></div>
-            <div class="row between"><span>Phone</span><strong id="profilePhone">-</strong></div>
-            <div class="row between"><span>Wallet</span><strong>RM 24.50</strong></div>
-            <div class="row between"><span>Eco Points</span><strong id="pointsText">300 pts</strong></div>
-            <div class="row between"><span>Status</span><strong id="profileStatus">Standard</strong></div>
-          </div>
-
-          <section class="card reward-hero stack">
-            <div class="row between">
-              <div>
-                <span class="badge dark">UniRide Rewards</span>
-                <h2 id="rewardLevel" style="margin:10px 0 4px">Bronze Rider</h2>
-                <p id="rewardNext" style="margin:0">Earn points from every campus ride.</p>
-              </div>
-              <div class="price" id="rewardPoints" style="color:white">300</div>
-            </div>
-            <div class="progress" aria-label="Reward level progress">
-              <span id="rewardProgress"></span>
-            </div>
-          </section>
-
-          <section class="card stack">
-            <div class="row between">
-              <h3 style="margin:0">Reward Missions</h3>
-              <span class="badge">Daily</span>
-            </div>
-            <div id="missionList"></div>
-          </section>
-
-          <section class="card stack">
-            <div class="row between">
-              <h3 style="margin:0">Redeem Rewards</h3>
-              <span class="badge warn">Beta</span>
-            </div>
-            <div id="rewardList" class="reward-grid"></div>
-          </section>
-
-          <button class="btn danger" onclick="logout()" data-i18n="logout">Logout</button>
-        </main>
-      </div>
-    </section>
-
-    <nav id="bottomNav" class="nav">
-      <button id="navHome" class="active" onclick="showPage('homePage')"><span class="ico">HOME</span>Home</button>
-      <button id="navPost" onclick="showPage('postPage')"><span class="ico">POST</span>Post</button>
-      <button id="navStatus" onclick="showPage('statusPage')"><span class="ico">RIDE</span>Status</button>
-      <button id="navHistory" onclick="showPage('historyPage')"><span class="ico">LOG</span>History</button>
-      <button id="navProfile" onclick="showPage('profilePage')"><span class="ico">ME</span>Profile</button>
-    </nav>
-
-    <div id="otpModal" class="modal centered">
-      <div class="modal-box center stack">
-        <h2>Enter OTP</h2>
-        <p>The demo verification code appears at the top of the screen.</p>
-        <div id="otpError" class="error"></div>
-        <input id="otpInput" maxlength="4" placeholder="1234" style="text-align:center;font-size:24px;font-weight:900;letter-spacing:10px" />
-        <div class="row">
-          <button class="btn secondary" onclick="closeOtp()">Cancel</button>
-          <button class="btn" onclick="verifyOtp()">Verify</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="confirmModal" class="modal">
-      <div class="modal-box stack">
-        <h2 data-i18n="confirmBooking">Confirm Booking</h2>
-        <div id="confirmContent" class="stack"></div>
-        <div class="row">
-          <button class="btn secondary" onclick="closeConfirm()">Cancel</button>
-          <button class="btn" onclick="confirmBooking()">Confirm Booking</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="sosModal" class="modal">
-      <div class="modal-box stack">
-        <h2>Emergency Assistance</h2>
-
-        <div class="card soft stack">
-          <strong>Live safety preview</strong>
-          <span id="sosLocation" class="muted">Location: Campus route, UniMAP</span>
-          <span class="muted">Emergency contacts: Campus Police, 999, trusted contact</span>
-          <button class="btn secondary" onclick="shareTrip()">Share Current Trip</button>
+            <div id="statusCard" class="card stack"></div>
+          </main>
         </div>
 
-        <a class="btn" href="tel:049885555" style="display:grid;place-items:center;text-decoration:none">Call UniMAP Police</a>
-        <a class="btn danger" href="tel:999" style="display:grid;place-items:center;text-decoration:none">Call 999</a>
-        <button class="btn secondary" onclick="closeSos()">Close</button>
-      </div>
-    </div>
-  </div>
+        <div id="historyPage" class="app-page" style="display: none">
+          <main class="screen stack">
+            <div>
+              <h2 data-i18n="history">Ride History</h2>
+              <p data-i18n="historyDesc">Your recent campus trips.</p>
+            </div>
+            <div id="historyList" class="stack"></div>
+          </main>
+        </div>
 
-  <script>
-    const locations = [
-      "UniMAP Pauh Putra Main Campus",
-      "Tuanku Syed Library",
-      "UniCITI Alam Hostel",
-      "Kangar City Campus",
-      "Arau Engineering Faculty",
-      "Kuala Perlis Campus",
-      "KTM Arau Train Station",
-      "Main Gate",
-      "Student Center",
-      "C-Mart Arau"
-    ];
+        <div id="profilePage" class="app-page" style="display: none">
+          <main class="screen stack">
+            <div class="card" style="text-align: center">
+              <div
+                class="brand-mark"
+                style="
+                  width: 76px;
+                  height: 76px;
+                  font-size: 26px;
+                  margin-bottom: 12px;
+                "
+              >
+                ID
+              </div>
+              <h2 id="profileName">Student</h2>
+              <span class="badge">Verified Student</span>
+            </div>
 
-    const i18n = {
-      en: {
-        appName: "UniRide Campus",
-        intro: "Safe, affordable campus rides for verified UniMAP students and staff.",
-        getStarted: "Get Started",
-        demoLogin: "Demo Login",
-        back: "Back",
-        verifyTitle: "Account Verification",
-        verifyDesc: "Use a valid 9-digit UniMAP student ID or student email.",
-        fullName: "Full Name",
-        gender: "Gender",
-        phone: "Malaysia Phone",
-        studentId: "Student ID or Email",
-        oku: "Register as OKU special care member",
-        secureLogin: "Secure Login",
-        findDrivers: "Find Drivers",
-        findPassengers: "Find Passengers",
-        whereTo: "Where are you heading today?",
-        postJourney: "Post Journey",
-        postDesc: "Offer seats or request a ride around campus.",
-        postingAs: "I am posting as",
-        driverVerify: "Driver Verification",
-        departure: "Departure",
-        destination: "Destination",
-        pickup: "Pickup Landmark",
-        departTime: "Departure Time",
-        fare: "Calculated Fare",
-        seats: "Seats",
-        publish: "Publish Journey",
-        rideStatus: "Ride Status",
-        statusDesc: "Track your confirmed campus ride.",
-        history: "Ride History",
-        historyDesc: "Your recent campus trips.",
-        logout: "Logout",
-        confirmBooking: "Confirm Booking"
-      },
-      zh: {
-        appName: "UniRide Campus",
-        intro: "\u4e3a\u5df2\u8ba4\u8bc1 UniMAP \u5b66\u751f\u548c\u804c\u5458\u63d0\u4f9b\u5b89\u5168\u3001\u5b9e\u60e0\u7684\u6821\u56ed\u51fa\u884c\u3002",
-        getStarted: "\u5f00\u59cb\u4f7f\u7528",
-        demoLogin: "\u6f14\u793a\u767b\u5f55",
-        back: "\u8fd4\u56de",
-        verifyTitle: "\u8d26\u53f7\u9a8c\u8bc1",
-        verifyDesc: "\u8bf7\u8f93\u5165\u6709\u6548\u7684 9 \u4f4d UniMAP \u5b66\u53f7\u6216\u5b66\u751f\u90ae\u7bb1\u3002",
-        fullName: "\u5168\u540d",
-        gender: "\u6027\u522b",
-        phone: "\u9a6c\u6765\u897f\u4e9a\u624b\u673a\u53f7",
-        studentId: "\u5b66\u53f7\u6216\u90ae\u7bb1",
-        oku: "\u6ce8\u518c\u4e3a OKU \u7279\u522b\u5173\u6000\u4f1a\u5458",
-        secureLogin: "\u5b89\u5168\u767b\u5f55",
-        findDrivers: "\u627e\u53f8\u673a",
-        findPassengers: "\u627e\u4e58\u5ba2",
-        whereTo: "\u4eca\u5929\u8981\u53bb\u54ea\u91cc\uff1f",
-        postJourney: "\u53d1\u5e03\u884c\u7a0b",
-        postDesc: "\u53d1\u5e03\u8f66\u4f4d\u6216\u6821\u56ed\u642d\u8f66\u9700\u6c42\u3002",
-        postingAs: "\u53d1\u5e03\u8eab\u4efd",
-        driverVerify: "\u53f8\u673a\u8ba4\u8bc1",
-        departure: "\u51fa\u53d1\u5730",
-        destination: "\u76ee\u7684\u5730",
-        pickup: "\u4e0a\u8f66\u5730\u6807",
-        departTime: "\u51fa\u53d1\u65f6\u95f4",
-        fare: "\u9884\u4f30\u8f66\u8d39",
-        seats: "\u5ea7\u4f4d",
-        publish: "\u53d1\u5e03\u884c\u7a0b",
-        rideStatus: "\u884c\u7a0b\u72b6\u6001",
-        statusDesc: "\u67e5\u770b\u5df2\u786e\u8ba4\u7684\u6821\u56ed\u884c\u7a0b\u3002",
-        history: "\u884c\u7a0b\u8bb0\u5f55",
-        historyDesc: "\u4f60\u6700\u8fd1\u7684\u6821\u56ed\u884c\u7a0b\u3002",
-        logout: "\u9000\u51fa\u767b\u5f55",
-        confirmBooking: "\u786e\u8ba4\u9884\u8ba2"
-      }
-    };
+            <div class="card stack">
+              <div class="row between">
+                <span>Email</span><strong id="profileEmail">-</strong>
+              </div>
+              <div class="row between">
+                <span>Phone</span><strong id="profilePhone">-</strong>
+              </div>
+              <div class="row between">
+                <span>Wallet</span><strong>RM 24.50</strong>
+              </div>
+              <div class="row between">
+                <span>Eco Points</span><strong id="pointsText">300 pts</strong>
+              </div>
+              <div class="row between">
+                <span>Status</span><strong id="profileStatus">Standard</strong>
+              </div>
+            </div>
 
-    let lang = localStorage.getItem("uniride_lang") || "en";
-    let currentFeed = "offer";
-    let generatedOtp = "";
-    let pendingUser = null;
-    let pendingRideId = null;
-    let points = Number(localStorage.getItem("uniride_points") || 300);
-
-    const rewardLevels = [
-      { name: "Bronze Rider", min: 0, next: 500 },
-      { name: "Silver Rider", min: 500, next: 1000 },
-      { name: "Gold Rider", min: 1000, next: 1800 },
-      { name: "Campus Hero", min: 1800, next: null }
-    ];
-
-    const rewardCatalog = [
-      { title: "RM 2 Ride Voucher", cost: 300, desc: "Use on your next confirmed campus ride." },
-      { title: "Priority Match", cost: 450, desc: "Highlight your next ride request for faster matching." },
-      { title: "Free Peak Fee", cost: 650, desc: "Waive one RM 2 peak-hour add-on." },
-      { title: "Care Ride Badge", cost: 800, desc: "Show a trusted helper badge for OKU-friendly rides." }
-    ];
-
-    const defaultRides = [
-      {
-        id: 1,
-        type: "offer",
-        name: "Daniel Tan",
-        gender: "Male",
-        phone: "60123456789",
-        from: "UniMAP Pauh Putra Main Campus",
-        to: "KTM Arau Train Station",
-        pickup: "Beside library fountain",
-        time: "2026-07-02T08:30",
-        seats: 3,
-        fare: "RM 12",
-        rating: "4.9",
-        plate: "PBA 1234",
-        model: "Perodua Myvi",
-        femaleOnly: false
-      },
-      {
-        id: 2,
-        type: "offer",
-        name: "Nur Aina",
-        gender: "Female",
-        phone: "60198765432",
-        from: "UniCITI Alam Hostel",
-        to: "Kangar City Campus",
-        pickup: "Block A bus stop",
-        time: "2026-07-02T14:15",
-        seats: 2,
-        fare: "RM 17",
-        rating: "5.0",
-        plate: "RAN 8821",
-        model: "Proton Saga",
-        femaleOnly: true
-      },
-      {
-        id: 3,
-        type: "request",
-        name: "Alex Lim",
-        gender: "Male",
-        phone: "60111223344",
-        from: "Arau Engineering Faculty",
-        to: "Main Gate",
-        pickup: "Faculty foyer",
-        time: "2026-07-03T10:00",
-        seats: 1,
-        fare: "RM 6",
-        rating: "4.8",
-        plate: "-",
-        model: "-",
-        femaleOnly: false
-      }
-    ];
-
-    function getRides() {
-      const saved = safeParse("uniride_rides_v2", null);
-      if (Array.isArray(saved)) return saved;
-      localStorage.setItem("uniride_rides_v2", JSON.stringify(defaultRides));
-      return [...defaultRides];
-    }
-
-    function saveRides(rides) {
-      localStorage.setItem("uniride_rides_v2", JSON.stringify(rides));
-    }
-
-    function currentUser() {
-      return safeParse("uniride_user", null);
-    }
-
-    function bookings() {
-      const saved = safeParse("uniride_bookings", []);
-      return Array.isArray(saved) ? saved : [];
-    }
-
-    function saveBookings(items) {
-      localStorage.setItem("uniride_bookings", JSON.stringify(items));
-    }
-
-    function safeParse(key, fallback) {
-      try {
-        const value = localStorage.getItem(key);
-        return value ? JSON.parse(value) : fallback;
-      } catch {
-        localStorage.removeItem(key);
-        return fallback;
-      }
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
-
-    function showView(id) {
-      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-      document.getElementById("bottomNav").classList.toggle("show", id === "appView");
-    }
-
-    function showPage(id) {
-      document.querySelectorAll(".app-page").forEach(p => p.style.display = "none");
-      document.getElementById(id).style.display = "block";
-
-      document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
-
-      const map = {
-        homePage: "navHome",
-        postPage: "navPost",
-        statusPage: "navStatus",
-        historyPage: "navHistory",
-        profilePage: "navProfile"
-      };
-
-      document.getElementById(map[id]).classList.add("active");
-
-      if (id === "homePage") renderRides();
-      if (id === "statusPage") renderStatus();
-      if (id === "historyPage") renderHistory();
-      if (id === "profilePage") renderProfile();
-    }
-
-    function toggleLang() {
-      lang = lang === "en" ? "zh" : "en";
-      localStorage.setItem("uniride_lang", lang);
-      applyLang();
-    }
-
-    function applyLang() {
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        el.innerText = i18n[lang][el.dataset.i18n] || el.innerText;
-      });
-
-      document.getElementById("langBtn").innerText = lang === "en" ? "\u4e2d\u6587" : "EN";
-      document.getElementById("langBtnApp").innerText = lang === "en" ? "\u4e2d\u6587" : "EN";
-    }
-
-    function requestOtp(event) {
-      event.preventDefault();
-
-      const name = value("nameInput");
-      const phone = value("phoneInput");
-      const gender = value("genderInput");
-      const credential = value("credentialInput").toLowerCase();
-      const error = document.getElementById("loginError");
-
-      error.classList.remove("show");
-
-      if (!/^60\d{8,10}$/.test(phone)) {
-        return showError(error, "Phone must use Malaysia format, for example 60123456789.");
-      }
-
-      const rawId = /^\d{9}$/;
-      const sId = /^s\d{9}$/;
-      const studentMail = /^s\d{9}@studentmail\.unimap\.edu\.my$/;
-
-      let idDigits = "";
-      let email = "";
-
-      if (rawId.test(credential)) {
-        idDigits = credential;
-        email = "s" + credential + "@studentmail.unimap.edu.my";
-      } else if (sId.test(credential)) {
-        idDigits = credential.slice(1);
-        email = credential + "@studentmail.unimap.edu.my";
-      } else if (studentMail.test(credential)) {
-        idDigits = credential.slice(1, 10);
-        email = credential;
-      } else {
-        return showError(error, "Invalid ID. Use 9 digits, s + 9 digits, or UniMAP student email.");
-      }
-
-      const year = Number(idDigits.slice(0, 2));
-
-      if (year < 20 || year > 26) {
-        return showError(error, "Student ID must start with enrollment year 20 to 26. Example: 261234567");
-      }
-
-      pendingUser = {
-        name,
-        phone,
-        gender,
-        email,
-        studentId: idDigits,
-        verified: true,
-        isOku: document.getElementById("okuInput").checked
-      };
-
-      generatedOtp = String(Math.floor(1000 + Math.random() * 9000));
-      document.getElementById("otpInput").value = "";
-      document.getElementById("otpError").classList.remove("show");
-
-      showToast("UniRide OTP: " + generatedOtp);
-      document.getElementById("otpModal").classList.add("show");
-    }
-
-    function verifyOtp() {
-      const error = document.getElementById("otpError");
-      error.classList.remove("show");
-
-      if (value("otpInput") !== generatedOtp) {
-        return showError(error, "Wrong OTP. Check the black notification at the top.");
-      }
-
-      localStorage.setItem("uniride_user", JSON.stringify(pendingUser));
-      document.getElementById("otpModal").classList.remove("show");
-      enterApp();
-    }
-
-    function quickDemo() {
-      localStorage.setItem("uniride_user", JSON.stringify({
-        name: "Alex Lim",
-        phone: "60123456789",
-        gender: "Male",
-        email: "s261234567@studentmail.unimap.edu.my",
-        studentId: "261234567",
-        verified: true,
-        isOku: false
-      }));
-
-      enterApp();
-    }
-
-    function enterApp() {
-      document.getElementById("helloText").innerText = "Hi, " + firstName(currentUser().name);
-      renderHomeRewards();
-      showView("appView");
-      showPage("homePage");
-    }
-
-    function setFeed(type) {
-      currentFeed = type;
-
-      document.getElementById("offerTab").classList.toggle("active", type === "offer");
-      document.getElementById("requestTab").classList.toggle("active", type === "request");
-
-      renderRides();
-    }
-
-    function renderRides() {
-      const user = currentUser();
-      renderHomeRewards();
-      const bookedIds = bookings()
-        .filter(b => b.userEmail === user.email)
-        .map(b => b.rideId);
-
-      const rides = getRides().filter(r => r.type === currentFeed && Number(r.seats) > 0);
-      const list = document.getElementById("ridesList");
-
-      if (!rides.length) {
-        list.innerHTML = '<div class="card muted" style="text-align:center">No rides found yet.</div>';
-        return;
-      }
-
-      list.innerHTML = rides.map(r => {
-        const already = bookedIds.includes(r.id);
-        const ownRide = r.ownerEmail === user.email;
-        const blockedFemale = r.femaleOnly && user.gender !== "Female";
-        const name = escapeHtml(r.name);
-
-        return `
-          <div class="card stack">
-            <div class="row between">
-              <div class="row">
-                <div class="avatar">${escapeHtml(initials(r.name))}</div>
+            <section class="card reward-hero stack">
+              <div class="row between">
                 <div>
-                  <span class="badge">${r.type === "offer" ? "Driver" : "Passenger"}</span>
-                  <h3 style="margin-top:8px">${name}</h3>
-                  <div class="muted mini">Rating ${escapeHtml(r.rating || "5.0")} - ${escapeHtml(r.gender)} - ${escapeHtml(r.seats)} seat(s)</div>
+                  <span class="badge dark">UniRide Rewards</span>
+                  <h2 id="rewardLevel" style="margin: 10px 0 4px">
+                    Bronze Rider
+                  </h2>
+                  <p id="rewardNext" style="margin: 0">
+                    Earn points from every campus ride.
+                  </p>
+                </div>
+                <div class="price" id="rewardPoints" style="color: white">
+                  300
                 </div>
               </div>
-              <div class="price">${escapeHtml(r.fare)}</div>
-            </div>
+              <div class="progress" aria-label="Reward level progress">
+                <span id="rewardProgress"></span>
+              </div>
+            </section>
 
-            <div class="row" style="flex-wrap:wrap">
-              <span class="badge dark">${escapeHtml(r.model || "CampusCar")}</span>
-              <span class="badge warn">${escapeHtml(r.plate || "Verified")}</span>
-              ${r.femaleOnly ? '<span class="badge warn">Ladies Only</span>' : ''}
-            </div>
+            <section class="card stack">
+              <div class="row between">
+                <h3 style="margin: 0">Reward Missions</h3>
+                <span class="badge">Daily</span>
+              </div>
+              <div id="missionList"></div>
+            </section>
 
-            <div class="stack mini" style="gap:6px">
-              <div><strong>From:</strong> ${escapeHtml(r.from)}</div>
-              <div><strong>To:</strong> ${escapeHtml(r.to)}</div>
-              <div><strong>Pickup:</strong> ${escapeHtml(r.pickup)}</div>
-              <div><strong>Time:</strong> ${escapeHtml(formatTime(r.time))}</div>
-            </div>
+            <section class="card stack">
+              <div class="row between">
+                <h3 style="margin: 0">Redeem Rewards</h3>
+                <span class="badge warn">Beta</span>
+              </div>
+              <div id="rewardList" class="reward-grid"></div>
+            </section>
 
-            <button
-              class="btn"
-              ${already || ownRide || blockedFemale ? "disabled" : ""}
-              onclick="openConfirm(${r.id})"
+            <button class="btn danger" onclick="logout()" data-i18n="logout">
+              Logout
+            </button>
+          </main>
+        </div>
+      </section>
+
+      <nav id="bottomNav" class="nav">
+        <button id="navHome" class="active" onclick="showPage('homePage')">
+          <span class="ico">HOME</span>Home
+        </button>
+        <button id="navPost" onclick="showPage('postPage')">
+          <span class="ico">POST</span>Post
+        </button>
+        <button id="navStatus" onclick="showPage('statusPage')">
+          <span class="ico">RIDE</span>Status
+        </button>
+        <button id="navHistory" onclick="showPage('historyPage')">
+          <span class="ico">LOG</span>History
+        </button>
+        <button id="navProfile" onclick="showPage('profilePage')">
+          <span class="ico">ME</span>Profile
+        </button>
+      </nav>
+
+      <div id="otpModal" class="modal centered">
+        <div class="modal-box center stack">
+          <h2>Enter OTP</h2>
+          <p>The demo verification code appears at the top of the screen.</p>
+          <div id="otpError" class="error"></div>
+          <input
+            id="otpInput"
+            maxlength="4"
+            placeholder="1234"
+            style="
+              text-align: center;
+              font-size: 24px;
+              font-weight: 900;
+              letter-spacing: 10px;
+            "
+          />
+          <div class="row">
+            <button class="btn secondary" onclick="closeOtp()">Cancel</button>
+            <button class="btn" onclick="verifyOtp()">Verify</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="confirmModal" class="modal">
+        <div class="modal-box stack">
+          <h2 data-i18n="confirmBooking">Confirm Booking</h2>
+          <div id="confirmContent" class="stack"></div>
+          <div class="row">
+            <button class="btn secondary" onclick="closeConfirm()">
+              Cancel
+            </button>
+            <button class="btn" onclick="confirmBooking()">
+              Confirm Booking
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="sosModal" class="modal">
+        <div class="modal-box stack">
+          <h2>Emergency Assistance</h2>
+
+          <div class="card soft stack">
+            <strong>Live safety preview</strong>
+            <span id="sosLocation" class="muted"
+              >Location: Campus route, UniMAP</span
             >
-              ${already ? "Already Booked" : ownRide ? "Your Ride" : blockedFemale ? "Ladies Only" : "View & Book"}
+            <span class="muted"
+              >Emergency contacts: Campus Police, 999, trusted contact</span
+            >
+            <button class="btn secondary" onclick="shareTrip()">
+              Share Current Trip
             </button>
           </div>
-        `;
-      }).join("");
-    }
 
-    function openConfirm(id) {
-      pendingRideId = id;
-      const r = getRides().find(x => x.id === id);
-      if (!r || Number(r.seats) < 1) {
-        pendingRideId = null;
-        return showToast("This ride is no longer available.");
-      }
-
-      document.getElementById("confirmContent").innerHTML = `
-        <div class="card soft stack">
-          <div class="row between">
-            <strong>${escapeHtml(r.from)}</strong>
-            <span>to</span>
-          </div>
-
-          <strong>${escapeHtml(r.to)}</strong>
-
-          <div class="map" style="min-height:150px">
-            <div class="route"></div>
-            <div class="car-dot">${escapeHtml(r.fare)}</div>
-          </div>
-
-          <div class="row between"><span>Driver</span><strong>${escapeHtml(r.name)}</strong></div>
-          <div class="row between"><span>Vehicle</span><strong>${escapeHtml(r.model)} / ${escapeHtml(r.plate)}</strong></div>
-          <div class="row between"><span>Time</span><strong>${escapeHtml(formatTime(r.time))}</strong></div>
-          <div class="row between"><span>Payment</span><strong>Wallet RM 24.50</strong></div>
+          <a
+            class="btn"
+            href="tel:049885555"
+            style="display: grid; place-items: center; text-decoration: none"
+            >Call UniMAP Police</a
+          >
+          <a
+            class="btn danger"
+            href="tel:999"
+            style="display: grid; place-items: center; text-decoration: none"
+            >Call 999</a
+          >
+          <button class="btn secondary" onclick="closeSos()">Close</button>
         </div>
-      `;
-
-      document.getElementById("confirmModal").classList.add("show");
-    }
-
-    function closeConfirm() {
-      document.getElementById("confirmModal").classList.remove("show");
-    }
-
-    function confirmBooking() {
-      const user = currentUser();
-      const rides = getRides();
-      const ride = rides.find(r => r.id === pendingRideId);
-
-      if (!ride) return;
-
-      if (bookings().some(b => b.rideId === ride.id && b.userEmail === user.email)) {
-        closeConfirm();
-        return showToast("You already booked this ride.");
-      }
-
-      if (Number(ride.seats) < 1) {
-        closeConfirm();
-        return showToast("This ride has no seats left.");
-      }
-
-      ride.seats = Number(ride.seats) - 1;
-      saveRides(rides);
-
-      const item = {
-        ...ride,
-        rideId: ride.id,
-        userEmail: user.email,
-        bookedBy: user.name,
-        bookedAt: new Date().toISOString(),
-        bookedSeats: 1,
-        originalOwnerEmail: ride.ownerEmail || "",
-        status: "Driver is on the way",
-        eta: "5 min"
-      };
-
-      const items = bookings();
-      items.unshift(item);
-      saveBookings(items);
-
-      addPoints(100, "Ride confirmed");
-
-      closeConfirm();
-
-      document.getElementById("bookingSuccess").innerText =
-        "Booking confirmed. Ride status is ready and 100 eco points were added.";
-
-      document.getElementById("bookingSuccess").classList.add("show");
-
-      showPage("statusPage");
-    }
-
-    function createRide(event) {
-      event.preventDefault();
-
-      const err = document.getElementById("postError");
-      err.classList.remove("show");
-
-      const type = value("rideType");
-      const from = value("departureInput");
-      const to = value("destinationInput");
-      const time = value("timeInput");
-
-      if (from === to) {
-        return showError(err, "Departure and destination cannot be the same.");
-      }
-
-      if (!time || new Date(time).getTime() <= Date.now()) {
-        return showError(err, "Departure time must be in the future.");
-      }
-
-      if (Number(value("seatsInput")) < 1) {
-        return showError(err, "Seat count must be at least 1.");
-      }
-
-      if (type === "offer") {
-        if (!/^[A-Z]{1,3}\s?\d{1,4}[A-Z]?$/i.test(value("plateInput"))) {
-          return showError(err, "Vehicle plate format is invalid. Example: PBA 1234.");
-        }
-
-        if (!/^\d{8,14}$/.test(value("licenseInput"))) {
-          return showError(err, "License number must be 8 to 14 digits.");
-        }
-      }
-
-      const user = currentUser();
-      const rides = getRides();
-
-      rides.unshift({
-        id: Date.now(),
-        type,
-        name: user.name,
-        gender: user.gender,
-        phone: user.phone,
-        ownerEmail: user.email,
-        from,
-        to,
-        pickup: value("pickupInput"),
-        time,
-        seats: Number(value("seatsInput")),
-        fare: calculateFare(),
-        rating: "5.0",
-        plate: type === "offer" ? value("plateInput").toUpperCase() : "-",
-        model: type === "offer" ? value("modelInput") : "Passenger Request",
-        femaleOnly: type === "offer" && document.getElementById("femaleOnlyInput").checked
-      });
-
-      saveRides(rides);
-      addPoints(40, type === "offer" ? "Journey posted" : "Ride request posted");
-
-      event.target.reset();
-      toggleDriverFields();
-      updateFare();
-      showPage("homePage");
-      setFeed(type);
-    }
-
-    function renderStatus() {
-      const user = currentUser();
-      const active = bookings().find(b => b.userEmail === user.email && b.status !== "Cancelled");
-      const box = document.getElementById("statusCard");
-
-      if (!active) {
-        box.innerHTML = '<p>No active ride yet. Book a ride to see live status.</p>';
-        return;
-      }
-
-      box.innerHTML = `
-        <div class="row between">
-          <span class="badge">Active Ride</span>
-          <strong>${escapeHtml(active.eta)}</strong>
-        </div>
-
-        <h3>${escapeHtml(active.status)}</h3>
-
-        <div class="stack mini" style="gap:7px">
-          <div><strong>Route:</strong> ${escapeHtml(active.from)} to ${escapeHtml(active.to)}</div>
-          <div><strong>Driver:</strong> ${escapeHtml(active.name)}</div>
-          <div><strong>Vehicle:</strong> ${escapeHtml(active.model)} / ${escapeHtml(active.plate)}</div>
-          <div><strong>Pickup:</strong> ${escapeHtml(active.pickup)}</div>
-        </div>
-
-        <div class="grid2">
-          <a class="btn secondary" href="tel:${encodeURIComponent(active.phone)}" style="display:grid;place-items:center;text-decoration:none">Call</a>
-          <a class="btn secondary" href="https://wa.me/${encodeURIComponent(active.phone)}" target="_blank" style="display:grid;place-items:center;text-decoration:none">WhatsApp</a>
-        </div>
-
-        <button class="btn secondary" onclick="shareTrip()">Share Trip</button>
-        <button class="btn danger" onclick="cancelActiveRide()">Cancel Ride</button>
-      `;
-    }
-
-    function cancelActiveRide() {
-      const user = currentUser();
-      const items = bookings();
-      const active = items.find(b => b.userEmail === user.email && b.status !== "Cancelled");
-
-      if (!active) {
-        showToast("No active ride to cancel.");
-        return renderStatus();
-      }
-
-      const rides = getRides();
-      const ride = rides.find(r => r.id === active.rideId);
-      if (ride) {
-        ride.seats = Number(ride.seats || 0) + Number(active.bookedSeats || 1);
-        saveRides(rides);
-      }
-
-      active.status = "Cancelled";
-      active.cancelledAt = new Date().toISOString();
-      saveBookings(items);
-      showToast("Ride cancelled.");
-      renderStatus();
-    }
-
-    function shareTrip() {
-      const user = currentUser();
-      const active = bookings().find(b => b.userEmail === user.email);
-
-      const msg = active
-        ? `UniRide trip: ${active.from} to ${active.to}. Driver: ${active.name}. ETA: ${active.eta}. Location: UniMAP campus route.`
-        : "UniRide safety location: UniMAP campus route.";
-
-      if (navigator.share) {
-        navigator.share({ title: "UniRide Trip", text: msg });
-      } else {
-        showToast(msg);
-      }
-
-      if (localStorage.getItem("uniride_shared_trip") !== "yes") {
-        localStorage.setItem("uniride_shared_trip", "yes");
-        addPoints(20, "Trip shared");
-      }
-    }
-
-    function renderHistory() {
-      const user = currentUser();
-      const items = bookings().filter(b => b.userEmail === user.email);
-
-      document.getElementById("historyList").innerHTML = items.length
-        ? items.map(h => `
-          <div class="card">
-            <div class="row between">
-              <strong>${escapeHtml(h.from)} -> ${escapeHtml(h.to)}</strong>
-              <span class="badge">${escapeHtml(h.status)}</span>
-            </div>
-            <p style="margin:8px 0 0">${escapeHtml(formatTime(h.time))} - ${escapeHtml(h.fare)}</p>
-          </div>
-        `).join("")
-        : '<div class="card muted" style="text-align:center">No ride history yet.</div>';
-    }
-
-    function renderProfile() {
-      const user = currentUser();
-
-      document.getElementById("profileName").innerText = user.name;
-      document.getElementById("profileEmail").innerText = user.email;
-      document.getElementById("profilePhone").innerText = user.phone;
-      document.getElementById("profileStatus").innerText =
-        user.isOku ? "OKU Care / Verified Student" : "Verified Student";
-      document.getElementById("pointsText").innerText = points + " pts";
-      renderRewards();
-    }
-
-    function fillLocations() {
-      const dep = document.getElementById("departureInput");
-      const dest = document.getElementById("destinationInput");
-
-      dep.innerHTML = locations.map(l => `<option>${l}</option>`).join("");
-      dest.innerHTML = locations.map(l => `<option>${l}</option>`).join("");
-
-      dest.selectedIndex = 1;
-      updateFare();
-    }
-
-    function zone(location) {
-      if (location.includes("KTM") || location.includes("Arau")) return "ARAU";
-      if (location.includes("Kangar")) return "KANGAR";
-      if (location.includes("Kuala")) return "KPERLIS";
-      if (location.includes("UniCITI")) return "UNICITI";
-      return "PAUH";
-    }
-
-    function calculateFare() {
-      const a = zone(value("departureInput"));
-      const b = zone(value("destinationInput"));
-
-      const base =
-        a === b ? 5 :
-        [a, b].includes("KPERLIS") ? 20 :
-        [a, b].includes("UNICITI") ? 18 :
-        [a, b].includes("KANGAR") ? 15 :
-        10;
-
-      const hour = new Date(value("timeInput") || Date.now()).getHours();
-      const peak = (hour >= 7 && hour <= 9) || (hour >= 17 && hour <= 19) ? 2 : 0;
-
-      return "RM " + (base + peak);
-    }
-
-    function updateFare() {
-      document.getElementById("fareText").innerText = calculateFare();
-    }
-
-    function toggleDriverFields() {
-      document.getElementById("driverFields").style.display =
-        value("rideType") === "offer" ? "grid" : "none";
-    }
-
-    function showError(el, message) {
-      el.innerText = message;
-      el.classList.add("show");
-    }
-
-    function showToast(message) {
-      const toast = document.getElementById("smsToast");
-      toast.innerText = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 8000);
-    }
-
-    function addPoints(amount, reason) {
-      points += amount;
-      localStorage.setItem("uniride_points", points);
-      showToast("+" + amount + " points: " + reason);
-    }
-
-    function rewardLevel() {
-      return rewardLevels
-        .slice()
-        .reverse()
-        .find(level => points >= level.min) || rewardLevels[0];
-    }
-
-    function rewardProgress(level) {
-      if (!level.next) return 100;
-      return Math.min(100, Math.round(((points - level.min) / (level.next - level.min)) * 100));
-    }
-
-    function renderRewards() {
-      const level = rewardLevel();
-      const progress = rewardProgress(level);
-      const nextText = level.next
-        ? (level.next - points) + " points to " + rewardLevels.find(x => x.min === level.next).name
-        : "Top level unlocked. Keep earning perks.";
-
-      document.getElementById("rewardLevel").innerText = level.name;
-      document.getElementById("rewardNext").innerText = nextText;
-      document.getElementById("rewardPoints").innerText = points + " pts";
-      document.getElementById("rewardProgress").style.setProperty("--progress", progress + "%");
-
-      const completedBookings = bookings().filter(b => b.userEmail === currentUser().email);
-      const activeRides = completedBookings.filter(b => b.status !== "Cancelled").length;
-      const postedRides = getRides().filter(r => r.ownerEmail === currentUser().email).length;
-
-      const missions = [
-        { title: "Book a campus ride", desc: "Earn 100 points after confirming a ride.", done: activeRides > 0, reward: "+100" },
-        { title: "Post a journey", desc: "Offer seats or request a route for 40 points.", done: postedRides > 0, reward: "+40" },
-        { title: "Share your trip", desc: "Use Share Trip from ride status for 20 points.", done: localStorage.getItem("uniride_shared_trip") === "yes", reward: "+20" }
-      ];
-
-      document.getElementById("missionList").innerHTML = missions.map(m => `
-        <div class="task-row">
-          <div>
-            <strong>${escapeHtml(m.title)}</strong>
-            <div class="muted mini">${escapeHtml(m.desc)}</div>
-          </div>
-          <span class="badge ${m.done ? "" : "warn"}">${m.done ? "Done" : m.reward}</span>
-        </div>
-      `).join("");
-
-      document.getElementById("rewardList").innerHTML = rewardCatalog.map((item, index) => {
-        const canRedeem = points >= item.cost;
-        return `
-          <div class="reward-tile">
-            <strong>${escapeHtml(item.title)}</strong>
-            <small>${escapeHtml(item.desc)}</small>
-            <button class="btn small ${canRedeem ? "" : "secondary"}" onclick="redeemReward(${index})" ${canRedeem ? "" : "disabled"}>
-              ${canRedeem ? "Redeem" : item.cost + " pts"}
-            </button>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function renderHomeRewards() {
-      const strip = document.getElementById("homeRewardStrip");
-      if (!strip || !currentUser()) return;
-
-      const level = rewardLevel();
-      const nextText = level.next
-        ? (level.next - points) + " pts to " + rewardLevels.find(x => x.min === level.next).name
-        : "Top level unlocked.";
-
-      strip.style.display = "grid";
-      document.getElementById("homeRewardLevel").innerText = level.name;
-      document.getElementById("homeRewardNext").innerText = nextText;
-      document.getElementById("homeRewardPoints").innerText = points + " pts";
-    }
-
-    function redeemReward(index) {
-      const reward = rewardCatalog[index];
-      if (!reward) return;
-      if (points < reward.cost) return showToast("Not enough points yet.");
-      points -= reward.cost;
-      localStorage.setItem("uniride_points", points);
-      showToast(reward.title + " redeemed. It will appear in your wallet.");
-      renderProfile();
-    }
-
-    function closeOtp() {
-      document.getElementById("otpModal").classList.remove("show");
-    }
-
-    function openSos() {
-      document.getElementById("sosModal").classList.add("show");
-    }
-
-    function closeSos() {
-      document.getElementById("sosModal").classList.remove("show");
-    }
-
-    function logout() {
-      localStorage.removeItem("uniride_user");
-      showView("welcomeView");
-    }
-
-    function firstName(name) {
-      return (name || "Student").split(" ")[0];
-    }
-
-    function initials(name) {
-      return (name || "UR")
-        .split(" ")
-        .map(x => x[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase();
-    }
-
-    function formatTime(value) {
-      return value ? value.replace("T", " ") : "-";
-    }
-
-    function value(id) {
-      return document.getElementById(id).value.trim();
-    }
-
-    fillLocations();
-    toggleDriverFields();
-    applyLang();
-
-    if (currentUser()) enterApp();
-  </script>
-</body>
+      </div>
+    </div>
+
+    <script src="js/uniride.js"></script>
+  </body>
 </html>
