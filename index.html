@@ -4,499 +4,553 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UniRide Campus</title>
-    <link rel="stylesheet" href="css/uniride.css" />
+    <link rel="stylesheet" href="css/styles.css?v=10" />
   </head>
   <body>
-    <div class="phone">
-      <div id="smsToast" class="toast"></div>
-
-      <section id="welcomeView" class="view active center">
-        <div>
-          <div class="brand-mark">UR</div>
-          <h1 data-i18n="appName">UniRide Campus</h1>
-          <p data-i18n="intro">
-            Safe, affordable campus rides for verified UniMAP students and
-            staff.
-          </p>
-        </div>
-
-        <div class="stack">
-          <button
-            class="btn"
-            onclick="showView('loginView')"
-            data-i18n="getStarted"
-          >
-            Get Started
-          </button>
-          <button
-            class="btn secondary"
-            onclick="quickDemo()"
-            data-i18n="demoLogin"
-          >
-            Demo Login
-          </button>
-          <button class="btn secondary" onclick="toggleLang()" id="langBtn">
-            中文
-          </button>
-        </div>
-      </section>
-
-      <section id="loginView" class="view">
-        <div class="screen stack">
-          <button
-            class="btn secondary small"
-            onclick="showView('welcomeView')"
-            data-i18n="back"
-          >
-            Back
-          </button>
-
-          <div>
-            <h2 data-i18n="verifyTitle">Account Verification</h2>
-            <p data-i18n="verifyDesc">
-              Use a valid 9-digit UniMAP student ID or student email.
-            </p>
-          </div>
-
-          <div id="loginError" class="error"></div>
-
-          <form class="stack" onsubmit="requestOtp(event)">
-            <div>
-              <label data-i18n="fullName">Full Name</label>
-              <input id="nameInput" required placeholder="Alex Lim" />
+    <main class="stage">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>|||| WiFi</span></div>
+        <section class="screen">
+          <section id="welcome" class="view welcome">
+            <div class="logo">UR</div>
+            <h1>UniRide Campus</h1>
+            <p><strong>Safe verified campus rides for UniMAP students</strong></p>
+            <p>Book trusted student rides, share trips, and travel safer around campus.</p>
+            <a class="btn white" href="#verify">Get Started</a>
+            <a class="btn ghost" href="#home">Demo Login</a>
+            <div class="langs">
+              <a class="pill active" href="#welcome" data-lang="en">EN</a><a class="pill" href="#welcome" data-lang="bm">BM</a><a class="pill" href="#welcome" data-lang="zh">中文</a>
             </div>
+          </section>
 
-            <div>
-              <label data-i18n="gender">Gender</label>
-              <select id="genderInput">
-                <option>Male</option>
-                <option>Female</option>
-              </select>
-            </div>
-
-            <div>
-              <label data-i18n="phone">Malaysia Phone</label>
-              <input id="phoneInput" required placeholder="60123456789" />
-            </div>
-
-            <div>
-              <label data-i18n="studentId">Student ID or Email</label>
-              <input id="credentialInput" required placeholder="261234567" />
-            </div>
-
-            <label class="row" style="text-transform: none">
-              <input
-                id="okuInput"
-                type="checkbox"
-                style="width: 18px; min-height: 18px"
-              />
-              <span data-i18n="oku">Register as OKU special care member</span>
-            </label>
-
-            <button class="btn" type="submit" data-i18n="secureLogin">
-              Secure Login
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <section id="appView" class="view">
-        <header class="topbar">
-          <div>
-            <strong>UniRide Campus</strong>
-            <p id="headerSubtitle">Verified campus mobility portal</p>
-          </div>
-
-          <div class="top-actions">
-            <button
-              class="btn secondary small"
-              onclick="toggleLang()"
-              id="langBtnApp"
-            >
-              中文
-            </button>
-            <button class="btn danger small" onclick="openSos()">SOS</button>
-          </div>
-        </header>
-
-        <div id="homePage" class="app-page">
-          <div class="tabs">
-            <button
-              id="offerTab"
-              class="active"
-              onclick="setFeed('offer')"
-              data-i18n="findDrivers"
-            >
-              Find Drivers
-            </button>
-            <button
-              id="requestTab"
-              onclick="setFeed('request')"
-              data-i18n="findPassengers"
-            >
-              Find Passengers
-            </button>
-          </div>
-
-          <main class="screen stack">
-            <div class="card">
-              <div class="row between">
-                <div>
-                  <h2 id="helloText">Hi</h2>
-                  <p data-i18n="whereTo">Where are you heading today?</p>
+          <section id="verify" class="view">
+            <header class="top">
+              <div class="top-row"><a class="back" href="#welcome">&lt;</a><div class="icon-tile">ID</div><div><h1>Account Verification</h1><p class="sub">Verify your student identity before booking rides</p></div></div>
+            </header>
+            <div class="content">
+              <section class="card">
+                <div class="field"><span class="label">Full Name</span><input class="input" placeholder="Your full name" /></div>
+                <div class="field"><span class="label">UniMAP Student ID or Student Email</span><input id="studentIdentity" class="input" placeholder="230112345 or 230112345@studentmail.unimap.edu.my" /></div>
+                <div class="field"><span class="label">Malaysia Phone (+60)</span><input class="input" placeholder="+60 12-345 6789" /></div>
+                <span class="label">Gender</span>
+                <div class="seg"><button class="active" data-toast="Gender set to Male">Male</button><button data-toast="Gender set to Female">Female</button></div>
+              </section>
+              <section class="card">
+                <button class="pref-row" id="okuToggle" data-toast="OKU special care form opened"><span><p>Register as OKU special care member</p><small class="muted">Verified OKU students receive 50% ride discount</small></span><span class="switch"></span></button>
+                <div class="oku-form" id="okuForm">
+                  <div class="field"><span class="label">OKU Card Number</span><input class="input oku-required" placeholder="e.g. OKU123456" /></div>
+                  <div class="field"><span class="label">Disability Category</span><input class="input oku-required" placeholder="e.g. Physical / Visual / Hearing" /></div>
+                  <div class="field"><span class="label">Emergency Contact</span><input class="input oku-required" placeholder="+60 12-000 0000" /></div>
+                  <p class="mini">Discount is applied only after OKU details are completed and verified.</p>
                 </div>
-                <span class="badge">Verified Student</span>
-              </div>
-
-              <div class="map">
-                <div class="route"></div>
-                <div class="car-dot">CAR</div>
-              </div>
-
-              <div style="margin-top: 12px">
-                <span class="chip">Library</span>
-                <span class="chip">Dormitory</span>
-                <span class="chip">Main Gate</span>
-                <span class="chip">KTM Arau</span>
-              </div>
+              </section>
+              <section class="card info"><h3>UniMAP Student Verification</h3><p class="muted" style="margin-top:8px">Your information is encrypted and used only for campus ride verification.</p></section>
+              <button class="btn" id="continueOtp">Continue to OTP</button>
             </div>
+          </section>
 
-            <div id="bookingSuccess" class="success"></div>
-            <div
-              id="homeRewardStrip"
-              class="card reward-hero stack"
-              style="display: none"
-            >
-              <div class="row between">
-                <div>
-                  <span class="badge dark">Rewards</span>
-                  <h3 id="homeRewardLevel" style="margin: 8px 0 2px">
-                    Bronze Rider
-                  </h3>
-                  <p id="homeRewardNext" style="margin: 0">
-                    Earn points from every ride.
-                  </p>
-                </div>
-                <strong id="homeRewardPoints" class="price" style="color: white"
-                  >300 pts</strong
-                >
-              </div>
-              <button
-                class="btn secondary small"
-                onclick="showPage('profilePage')"
-                style="width: 100%"
-              >
-                View Rewards
-              </button>
+          <section id="otp" class="view">
+            <header class="top">
+              <div class="top-row"><a class="back" href="#verify">&lt;</a><div class="icon-tile">OTP</div><div><h1>Phone Verification</h1><p class="sub">Enter the 6-digit code sent to +60 12-345 6789</p></div></div>
+            </header>
+            <div class="content">
+              <section class="card info" style="text-align:center"><p class="muted">Demo OTP Code</p><h2 id="otpCode" style="color:var(--teal);letter-spacing:6px;margin-top:8px">------</h2></section>
+              <div class="otp-grid"><input class="otp-box otp-input" maxlength="1" inputmode="numeric" /><input class="otp-box otp-input" maxlength="1" inputmode="numeric" /><input class="otp-box otp-input" maxlength="1" inputmode="numeric" /><input class="otp-box otp-input" maxlength="1" inputmode="numeric" /><input class="otp-box otp-input" maxlength="1" inputmode="numeric" /><input class="otp-box otp-input" maxlength="1" inputmode="numeric" /></div>
+              <section class="card info" style="text-align:center"><h3>This helps keep UniRide safe for verified students.</h3><p class="muted" style="margin-top:12px">Do not share this code with anyone.</p></section>
+              <button class="btn" id="verifyOtp">Verify & Continue</button>
+              <p id="otpError" style="display:none;text-align:center;margin-top:14px;color:var(--red);font-weight:800">Invalid OTP. Please enter the code shown above.</p>
+              <p style="text-align:center;margin-top:24px;color:var(--muted)">Resend code in <strong style="color:var(--teal)">45s</strong></p>
             </div>
-            <div id="ridesList" class="stack"></div>
-          </main>
-        </div>
+          </section>
 
-        <div id="postPage" class="app-page" style="display: none">
-          <main class="screen stack">
-            <div>
-              <h2 data-i18n="postJourney">Post Journey</h2>
-              <p data-i18n="postDesc">
-                Offer seats or request a ride around campus.
-              </p>
+          <section id="home" class="view">
+            <header class="top">
+              <div class="top-row"><a class="back" href="#welcome">&lt;</a><p class="sub" style="flex:1">Good morning</p></div>
+              <div class="top-row"><h1 style="flex:1">Hi, Alex <span class="pill" style="border:0;background:#ffa408;color:white;font-size:11px">VERIFIED</span></h1><a class="btn red" style="width:auto;min-height:44px;padding:0 18px;border-radius:15px" href="#sos">SOS</a></div>
+              <div class="wallet-strip"><div><span class="sub">Campus Wallet</span><strong>RM 24.50</strong></div><div><span class="sub">Rewards</span><strong><span class="orange">300 pts</span> <small>Bronze</small></strong></div></div>
+            </header>
+            <div class="content">
+              <section class="card route-card">
+                <div class="stop"><div><div class="dot"></div><div class="route-line"></div><div class="dot orange"></div></div><div><span class="label">PICKUP</span><h3>UniMAP Main Gate</h3><hr style="border:0;border-top:1px solid #e5eeec;margin:16px 0"><span class="label">DESTINATION</span><h3>KTM Arau Train Station</h3></div></div>
+                <div class="input" style="margin-top:18px;justify-content:space-between"><span>Today, 10:30 AM</span><a class="btn" style="width:auto;min-height:42px;padding:0 18px" href="#booking">Find Ride</a></div>
+              </section>
+              <section class="card"><div class="map"><div class="marker start"></div><div class="marker car">car</div><div class="marker end"></div><small class="campus">Campus</small><small class="ktm">KTM Arau</small></div><div class="chips"><button class="chip" data-toast="Pickup changed to Library">Library</button><button class="chip" data-toast="Pickup changed to Dormitory">Dormitory</button><button class="chip active" data-toast="Pickup is Main Gate">Main Gate</button><button class="chip" data-toast="Destination set to KTM Arau">KTM</button></div></section>
+              <div class="seg"><button class="active" data-toast="Showing available drivers">Find Drivers</button><button data-toast="Showing passenger requests">Find Passengers</button></div>
+              <section class="card driver-card"><div class="avatar">AH</div><div><h3>Ahmad Hazim <span class="verified">Verified</span></h3><p class="mini">Star 4.8 - 128 rides - 3 seats<br>Perodua Myvi - KBF 2341<br>UniMAP Main Gate -> KTM Arau - 10:30 AM</p></div><div class="price">RM 3.00<small style="display:block;color:var(--muted);font-size:12px">per pax</small><a class="btn" style="margin-top:18px;width:98px;min-height:38px;font-size:12px" href="#booking">View & Book</a></div></section>
+              <section class="card driver-card"><div class="avatar">NF</div><div><h3>Nur Fatin <span class="verified">Verified</span></h3><p class="mini">Star 4.9 - 96 rides - Ladies-only<br>Proton Iriz - KBB 8821<br>Dormitory A -> Kangar Town - 11:00 AM</p></div><div class="price">RM 2.50<small style="display:block;color:var(--muted);font-size:12px">per pax</small><a class="btn" style="margin-top:18px;width:98px;min-height:38px;font-size:12px" href="#booking">View & Book</a></div></section>
+              <nav class="bottom-nav"><a class="nav-item active" href="#home"><span>H</span>Home</a><a class="nav-item" href="#post-driver"><span>+</span>Post</a><a class="nav-item" href="#status"><span>></span>Status</a><a class="nav-item" href="#history"><span>C</span>History</a><a class="nav-item" href="#profile"><span>P</span>Profile</a></nav>
             </div>
+          </section>
 
-            <div id="postError" class="error"></div>
-
-            <form class="card stack" onsubmit="createRide(event)">
-              <div>
-                <label data-i18n="postingAs">I am posting as</label>
-                <select id="rideType" onchange="toggleDriverFields()">
-                  <option value="offer">Driver - offering seats</option>
-                  <option value="request">Passenger - requesting ride</option>
-                </select>
-              </div>
-
-              <div
-                id="driverFields"
-                class="stack card soft"
-                style="box-shadow: none"
-              >
-                <h3 data-i18n="driverVerify">Driver Verification</h3>
-
-                <div>
-                  <label>Vehicle Plate</label>
-                  <input id="plateInput" placeholder="PBA 1234" />
-                </div>
-
-                <div>
-                  <label>Vehicle Model</label>
-                  <select id="modelInput">
-                    <option>Perodua Myvi</option>
-                    <option>Proton Saga</option>
-                    <option>Honda City</option>
-                    <option>Yamaha Y15ZR</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label>License Number</label>
-                  <input id="licenseInput" placeholder="050913070409" />
-                </div>
-
-                <label class="row" style="text-transform: none">
-                  <input
-                    id="femaleOnlyInput"
-                    type="checkbox"
-                    style="width: 18px; min-height: 18px"
-                  />
-                  Ladies-only ride
-                </label>
-              </div>
-
-              <div>
-                <label data-i18n="departure">Departure</label>
-                <select id="departureInput" onchange="updateFare()"></select>
-              </div>
-
-              <div>
-                <label data-i18n="destination">Destination</label>
-                <select id="destinationInput" onchange="updateFare()"></select>
-              </div>
-
-              <div>
-                <label data-i18n="pickup">Pickup Landmark</label>
-                <input
-                  id="pickupInput"
-                  required
-                  placeholder="Library main entrance"
-                />
-              </div>
-
-              <div>
-                <label data-i18n="departTime">Departure Time</label>
-                <input
-                  id="timeInput"
-                  type="datetime-local"
-                  required
-                  onchange="updateFare()"
-                  oninput="updateFare()"
-                />
-              </div>
-
-              <div class="row between card" style="box-shadow: none">
-                <span class="strong" data-i18n="fare">Calculated Fare</span>
-                <span id="fareText" class="price">RM 5</span>
-              </div>
-
-              <div>
-                <label data-i18n="seats">Seats</label>
-                <select id="seatsInput">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                </select>
-              </div>
-
-              <button class="btn" type="submit" data-i18n="publish">
-                Publish Journey
-              </button>
-            </form>
-          </main>
-        </div>
-
-        <div id="statusPage" class="app-page" style="display: none">
-          <main class="screen stack">
-            <div>
-              <h2 data-i18n="rideStatus">Ride Status</h2>
-              <p data-i18n="statusDesc">Track your confirmed campus ride.</p>
+          <section id="booking" class="view">
+            <header class="top"><div class="top-row"><a class="back" href="#home">&lt;</a><h1>Confirm Booking</h1></div></header>
+            <div class="content">
+              <section class="card route-card"><h3>Choose Route</h3><p class="muted" style="margin-top:6px">Select where you are leaving from and where you want to go.</p><div class="field" style="margin-top:16px"><span class="label">DEPARTURE</span><select class="input route-select" id="departureSelect"><option>UniMAP Pauh Putra Main Campus</option><option>UniMAP Main Gate</option><option>Library</option><option>Dormitory A</option><option>Student Centre</option><option>Engineering Faculty</option><option>KTM Arau Train Station</option><option>Kangar Town</option></select></div><div class="field"><span class="label">DESTINATION</span><select class="input route-select" id="destinationSelect"><option>KTM Arau Train Station</option><option>UniMAP Pauh Putra Main Campus</option><option>UniMAP Main Gate</option><option>Library</option><option>Dormitory A</option><option>Student Centre</option><option>Engineering Faculty</option><option>Kangar Town</option></select></div><div class="estimate-strip"><div><strong id="estimateDistance">6.0 km</strong><span>Distance</span></div><div><strong id="estimateTime">12 min</strong><span>Time</span></div><div><strong id="estimateFareSmall">RM 3.00</strong><span>Fare</span></div></div></section>
+              <section class="card"><div class="map"><div class="marker start"></div><div class="marker car">car</div><div class="marker end"></div><small class="campus">Campus</small><small class="ktm">KTM Arau</small></div></section>
+              <section class="card"><h3>Ahmad Hazim <span class="verified">Verified</span></h3><p class="mini">Star 4.8 - 128 completed rides<br>Perodua Myvi - KBF 2341</p><hr style="border:0;border-top:1px solid #e5eeec"><p class="mini">Pickup Time <strong style="float:right;color:var(--ink)">10:30 AM</strong><br>Distance estimate <strong id="fareDistanceText" style="float:right;color:var(--ink)">6.0 km</strong><br>Base fare <strong id="baseFareText" style="float:right;color:var(--ink)">RM 2.50</strong><br>Campus service fee <strong style="float:right;color:var(--ink)">RM 0.50</strong><br><span class="oku-discount-line">OKU verified discount <strong style="float:right;color:#16a34a">-50%</strong></span></p><h3>Total Fare <span class="price" id="bookingFare" style="float:right">RM 3.00</span></h3></section>
+              <section class="card info"><h3>Campus Wallet - RM 24.50</h3><p>Trip details will be shared with your trusted contact automatically.</p></section>
+              <div style="display:grid;grid-template-columns:95px 1fr;gap:12px"><a class="btn soft" href="#home">Cancel</a><a class="btn" href="#status">Confirm Booking</a></div>
             </div>
+          </section>
 
-            <div class="map">
-              <div class="route"></div>
-              <div class="car-dot">3m</div>
+          <section id="status" class="view">
+            <header class="top"><div class="top-row"><a class="back" href="#home">&lt;</a><h1 style="flex:1">Ride Status</h1><a class="btn red" style="width:auto;min-height:44px;padding:0 18px;border-radius:15px" href="#sos">SOS</a></div><p class="sub">Live trip tracking - UR-2407-1030</p></header>
+            <div class="content">
+              <section class="card"><div class="map"><div class="eta">ETA 5 min</div><div class="marker start"></div><div class="marker car">car</div><div class="marker end"></div><small class="campus">Campus</small><small class="ktm">KTM Arau</small></div></section>
+              <section class="card"><div class="progress"><div><h2 style="color:#16a34a">Active Ride</h2><h3 style="margin-top:18px">Driver is arriving at pickup point</h3><p class="muted" style="margin-top:6px">Main Gate, UniMAP - KTM Arau</p></div><div class="pill">ETA: 5 min</div></div><div class="input" style="height:42px;margin-top:18px;color:var(--teal)">Live trip sharing is active</div></section>
+              <section class="card driver-card"><div class="avatar">AH</div><div><h3>Ahmad Hazim <span class="verified">Verified</span></h3><p class="mini">Star 4.8 - 128 completed rides<br>Perodua Myvi - KBF 2341<br>Blue Myvi - Check plate before entering</p></div><div class="price" style="font-size:18px">RM 3.00<small style="display:block;color:var(--muted);font-size:12px">paid by wallet</small></div></section>
+              <section class="card"><h3>Trip Details</h3><p class="mini" style="margin-top:14px">Pickup Point <strong style="float:right;color:var(--ink)">Main Gate, UniMAP</strong><br>Destination <strong style="float:right;color:var(--ink)">KTM Arau Train Station</strong><br>Pickup Time <strong style="float:right;color:var(--ink)">10:30 AM</strong><br>Trip ID <strong style="float:right;color:var(--ink)">UR-2407-1030</strong></p></section>
+              <section class="card"><h3>Safety & Sharing</h3><div class="setting-row"><div class="setting-icon">OK</div><div><h3>Trusted contact notified</h3><p class="muted">Ahmad (Family) received your live trip link</p></div></div><div class="setting-row"><div class="setting-icon">GPS</div><div><h3>Live location active</h3><p class="muted">Location updates every few seconds</p></div></div><div class="setting-row"><div class="setting-icon">ID</div><div><h3>Driver identity verified</h3><p class="muted">UniMAP student verification completed</p></div></div></section>
+              <section class="card"><h3>Trip Progress</h3><div class="steps"><div><div class="step-dot done">✓</div>Booking confirmed</div><div><div class="step-dot done">✓</div>Driver assigned</div><div><div class="step-dot now"></div>Driver arriving</div><div><div class="step-dot"></div>Picked up</div><div><div class="step-dot"></div>Arrived</div></div></section>
+              <section class="card"><h3>Payment</h3><p class="mini" style="margin-top:12px">Campus Wallet <strong style="float:right;color:var(--ink)">RM 24.50</strong><br>Total Fare <strong style="float:right;color:var(--teal)">RM 3.00</strong><br>Status <strong style="float:right;color:#16a34a">Authorized</strong></p></section>
+              <div class="actions"><button class="action" data-toast="Calling Ahmad Hazim...">Call</button><button class="action" data-toast="Opening WhatsApp chat...">WhatsApp</button><button class="action" data-toast="Trip link shared with trusted contact">Share Trip</button><button class="action danger" data-toast="Ride cancellation requested">Cancel</button></div>
+              <button class="btn" style="margin-top:14px" data-toast="Ride completed. Rewards added: +30 pts">Complete Ride</button>
+              <nav class="bottom-nav"><a class="nav-item" href="#home"><span>H</span>Home</a><a class="nav-item" href="#post-driver"><span>+</span>Post</a><a class="nav-item active" href="#status"><span>></span>Status</a><a class="nav-item" href="#history"><span>C</span>History</a><a class="nav-item" href="#profile"><span>P</span>Profile</a></nav>
             </div>
-
-            <div id="statusCard" class="card stack"></div>
-          </main>
-        </div>
-
-        <div id="historyPage" class="app-page" style="display: none">
-          <main class="screen stack">
-            <div>
-              <h2 data-i18n="history">Ride History</h2>
-              <p data-i18n="historyDesc">Your recent campus trips.</p>
+          </section>
+          <section id="post-driver" class="view">
+            <header class="top"><div class="top-row"><a class="back" href="#home">&lt;</a><div><h1>Post Journey</h1><p class="sub">Offer a ride to verified UniMAP students</p></div></div></header>
+            <div class="content">
+              <div class="seg"><a class="btn active" href="#post-driver">Driver</a><a class="btn soft" href="#post-passenger">Passenger</a></div>
+              <section class="card"><h3>Driver Verification</h3><br><div class="field"><span class="label">Vehicle Plate</span><input class="input" placeholder="e.g. KBF 2341"></div><div class="field"><span class="label">Vehicle Model</span><input class="input" placeholder="e.g. Perodua Myvi 2022"></div><div class="field"><span class="label">License Number</span><input class="input" placeholder="License number"></div><div class="check-row" style="justify-content:space-between"><div><h3>Ladies-only Ride</h3><p class="muted">Female passengers only</p></div><button class="pill active" style="background:var(--teal);color:white" data-toast="Ladies-only ride is enabled">ON</button></div></section>
+              <section class="card"><h3>Trip Details</h3><br><input class="input" placeholder="Departure Location"><br><input class="input" placeholder="Destination"><br><input class="input" placeholder="Pickup Landmark"><br><input class="input" placeholder="Departure Time"></section>
+              <section class="card fare-card"><div><span class="muted">Estimated Fare</span><strong>RM 5</strong><span class="muted">per passenger</span></div><div class="reward-box">+40 pts<br><span class="muted">Reward earned</span></div></section><button class="btn" data-toast="Journey published for verified students">Publish Journey</button>
+              <nav class="bottom-nav"><a class="nav-item" href="#home"><span>H</span>Home</a><a class="nav-item active" href="#post-driver"><span>+</span>Post</a><a class="nav-item" href="#status"><span>></span>Status</a><a class="nav-item" href="#history"><span>C</span>History</a><a class="nav-item" href="#profile"><span>P</span>Profile</a></nav>
             </div>
-            <div id="historyList" class="stack"></div>
-          </main>
-        </div>
+          </section>
 
-        <div id="profilePage" class="app-page" style="display: none">
-          <main class="screen stack">
-            <div class="card" style="text-align: center">
-              <div
-                class="brand-mark"
-                style="
-                  width: 76px;
-                  height: 76px;
-                  font-size: 26px;
-                  margin-bottom: 12px;
-                "
-              >
-                ID
+          <section id="post-passenger" class="view">
+            <header class="top"><div class="top-row"><a class="back" href="#home">&lt;</a><div><h1>Post Journey</h1><p class="sub">Request a campus ride</p></div></div></header>
+            <div class="content"><div class="seg"><a class="btn soft" href="#post-driver">Driver</a><a class="btn active" href="#post-passenger">Passenger</a></div><section class="card"><h3>Passenger Preferences</h3><br><button class="pref-row" data-toast="Ladies-only preference updated"><span><p>Ladies-only ride</p><small class="muted">Female drivers only</small></span><span class="switch"></span></button><button class="pref-row" data-toast="OKU assistance preference updated"><span><p>OKU assistance needed</p><small class="muted">Special care support</small></span><span class="switch"></span></button><button class="pref-row" data-toast="Quiet ride preference updated"><span><p>Quiet ride</p><small class="muted">No loud music or calls</small></span><span class="switch"></span></button></section><section class="card"><h3>Trip Details</h3><br><input class="input" placeholder="Pickup Location"><br><input class="input" placeholder="Destination"><br><input class="input" placeholder="Pickup Landmark"><br><input class="input" placeholder="Preferred Time"></section><section class="card fare-card"><div><span class="muted">Estimated Fare</span><strong>RM 5</strong><span class="muted">per passenger</span></div><div class="reward-box">+40 pts<br><span class="muted">Reward earned</span></div></section><button class="btn" data-toast="Ride request sent to nearby drivers">Request Ride</button><nav class="bottom-nav"><a class="nav-item" href="#home"><span>H</span>Home</a><a class="nav-item active" href="#post-passenger"><span>+</span>Post</a><a class="nav-item" href="#status"><span>></span>Status</a><a class="nav-item" href="#history"><span>C</span>History</a><a class="nav-item" href="#profile"><span>P</span>Profile</a></nav></div>
+          </section>
+
+          <section id="history" class="view">
+            <header class="top"><div class="top-row"><a class="back" href="#home">&lt;</a><div><h1>Ride History</h1><p class="sub">Your recent campus rides</p></div></div></header>
+            <div class="content"><div class="chips" style="margin-bottom:18px"><button class="chip active" data-toast="Showing all rides">All</button><button class="chip" data-toast="Showing completed rides">Completed</button><button class="chip" data-toast="Showing cancelled rides">Cancelled</button><button class="chip" data-toast="Showing reward rides">Rewards</button></div><section class="card history-card"><div><h3>UniMAP Campus -> KTM Arau</h3><p class="mini" style="margin-top:14px">Today, 8:30 AM - Ahmad Hazim</p><span class="verified" style="color:#16a34a">Completed</span> <strong class="orange">+30 pts</strong></div><div class="price" style="font-size:22px">RM 3.00<button class="btn soft" style="margin-top:22px;min-height:40px" data-toast="Receipt opened for RM 3.00 ride">Receipt</button></div></section><section class="card history-card"><div><h3>Dormitory A -> Kangar Town</h3><p class="mini" style="margin-top:14px">Yesterday, 5:00 PM - Nur Fatin</p><span class="verified" style="color:#16a34a">Completed</span> <strong class="orange">+55 pts</strong></div><div class="price" style="font-size:22px">RM 5.50<button class="btn soft" style="margin-top:22px;min-height:40px" data-toast="Receipt opened for RM 5.50 ride">Receipt</button></div></section><section class="card"><h3>Summary</h3><div class="summary" style="margin-top:22px"><div><strong>12</strong><span class="muted">Total Rides</span></div><div><strong>300 pts</strong><span class="muted">Points Earned</span></div><div><strong>RM 18.50</strong><span class="muted">Money Saved</span></div></div></section><nav class="bottom-nav"><a class="nav-item" href="#home"><span>H</span>Home</a><a class="nav-item" href="#post-driver"><span>+</span>Post</a><a class="nav-item" href="#status"><span>></span>Status</a><a class="nav-item active" href="#history"><span>C</span>History</a><a class="nav-item" href="#profile"><span>P</span>Profile</a></nav></div>
+          </section>
+
+          <section id="profile" class="view">
+            <header class="top profile-top">
+              <div class="top-row" style="margin-bottom:16px"><a class="back" href="#home">&lt;</a><p class="sub" style="flex:1">Profile</p></div>
+              <div class="profile-head">
+                <div class="logo" style="width:64px;height:64px;margin:0;font-size:26px;border-radius:18px">AL</div>
+                <div><h1>Alex Lim <span class="pill" style="border:0;background:#ffa408;color:white;font-size:11px">VERIFIED</span></h1><p class="sub">alex.lim@unimap.edu.my<br>+60 12-345 6789</p></div>
               </div>
-              <h2 id="profileName">Student</h2>
-              <span class="badge">Verified Student</span>
+              <div class="stats"><div><strong>RM 24.50</strong><span class="sub">Wallet</span></div><div><strong>300</strong><span class="sub">Points</span></div><div><strong>Bronze</strong><span class="sub">Rider</span></div></div>
+            </header>
+            <div class="content">
+              <section class="card profile-wallet"><div><p class="muted">Campus Wallet</p><h2>RM 24.50</h2></div><div class="profile-actions"><button class="btn" data-toast="Top up options opened">Top Up</button><button class="btn soft" data-toast="Transactions opened">Transactions</button></div></section>
+                            <section class="card reward-card"><h3>UniRide Rewards</h3><div class="progress" style="margin-top:18px"><h1 style="font-size:42px">300 <small>pts</small></h1><p>Bronze Rider<br><small>200 pts to Silver</small></p></div><div class="bar"><span></span></div></section>
+              <section class="card"><h3>Rider Level Journey</h3><p class="muted" style="margin-top:6px">Collect points by booking rides, posting journeys, sharing trips, and completing safe rides.</p><div class="tier-list"><div class="tier active"><strong>Bronze</strong><span>0 pts</span></div><div class="tier"><strong>Silver</strong><span>500 pts</span></div><div class="tier"><strong>Gold</strong><span>1,200 pts</span></div><div class="tier"><strong>Platinum</strong><span>2,500 pts</span></div><div class="tier"><strong>Diamond</strong><span>5,000 pts</span></div><div class="tier"><strong>Starlight</strong><span>8,000 pts</span></div><div class="tier"><strong>Supreme</strong><span>12,000 pts</span></div><div class="tier"><strong>Supreme Pro Max</strong><span>20,000 pts</span></div></div></section>
+              <section class="card"><h3>Current Benefits</h3><div class="benefit-grid"><button class="benefit" data-toast="5% fare discount benefit applied"><strong>5%</strong><span>Fare discount</span></button><button class="benefit" data-toast="Priority matching enabled"><strong>Fast</strong><span>Priority match</span></button><button class="benefit" data-toast="Searching for 5-star drivers"><strong>5★</strong><span>Top-rated drivers</span></button><button class="benefit" data-toast="Safe rider badge viewed"><strong>Badge</strong><span>Safe rider</span></button></div></section>
+              <section class="card"><h3>Redeem Gifts</h3><div class="redeem-list"><button class="redeem-item" data-toast="RM2 ride voucher redeemed"><span><strong>RM 2 Ride Voucher</strong><small>300 pts</small></span><b>Redeem</b></button><button class="redeem-item" data-toast="Priority Match redeemed"><span><strong>Priority Match</strong><small>450 pts</small></span><b>Redeem</b></button><button class="redeem-item locked" data-toast="Not enough points for Free Peak Fee"><span><strong>Free Peak Fee</strong><small>650 pts</small></span><b>Locked</b></button><button class="redeem-item locked" data-toast="Not enough points for UniMAP merch"><span><strong>UniMAP Merch Gift</strong><small>1,000 pts</small></span><b>Locked</b></button></div></section>
+              <section class="card settings clean-settings">
+                <a class="setting-row" href="#language"><div class="setting-icon">GL</div><div><h3>Language</h3><p class="muted">English / BM / 中文</p></div><div class="chev">></div></a>
+                <button class="setting-row" data-toast="Trusted contacts opened"><div class="setting-icon">TC</div><div><h3>Trusted Contacts</h3><p class="muted">2 contacts saved</p></div><div class="chev">></div></button>
+                <button class="setting-row" data-toast="Safety settings opened"><div class="setting-icon">SS</div><div><h3>Safety Settings</h3><p class="muted">SOS and live trip sharing</p></div><div class="chev">></div></button>
+                <button class="setting-row" data-toast="Verification status opened"><div class="setting-icon">OK</div><div><h3>Verification</h3><p class="muted">UniMAP student verified</p></div><div class="chev">></div></button>
+              </section>
+              <a class="btn logout-btn" id="logoutBtn" href="#welcome">Logout</a>
+              <nav class="bottom-nav"><a class="nav-item" href="#home"><span>H</span>Home</a><a class="nav-item" href="#post-driver"><span>+</span>Post</a><a class="nav-item" href="#status"><span>></span>Status</a><a class="nav-item" href="#history"><span>C</span>History</a><a class="nav-item active" href="#profile"><span>P</span>Profile</a></nav>
             </div>
+          </section>
+          <section id="language" class="view">
+            <header class="top"><div class="top-row"><a class="back" href="#profile">&lt;</a><div class="icon-tile">GL</div><div><h1>Choose Language</h1><p class="sub">Select your preferred app language</p></div></div></header>
+            <div class="content"><section class="card settings language-list"><button class="setting-row" data-lang="en"><div class="setting-icon">EN</div><div><h3>English</h3><p class="muted">English</p></div><div class="chev lang-check">✓</div></button><button class="setting-row" data-lang="bm"><div class="setting-icon">BM</div><div><h3>Bahasa Melayu</h3><p class="muted">Bahasa Melayu</p></div><div class="chev lang-check"></div></button><button class="setting-row" data-lang="zh"><div class="setting-icon">中</div><div><h3>中文</h3><p class="muted">华语</p></div><div class="chev lang-check"></div></button></section><section class="card info"><h3 id="languagePreviewTitle">Preview</h3><p class="mini" id="languagePreview" style="margin-top:12px">English: Find Ride<br>Bahasa Melayu: Cari Perjalanan<br>中文：寻找行程</p></section><a class="btn" href="#profile" id="applyLanguageBtn">Apply Language</a></div>
+          </section>
 
-            <div class="card stack">
-              <div class="row between">
-                <span>Email</span><strong id="profileEmail">-</strong>
-              </div>
-              <div class="row between">
-                <span>Phone</span><strong id="profilePhone">-</strong>
-              </div>
-              <div class="row between">
-                <span>Wallet</span><strong>RM 24.50</strong>
-              </div>
-              <div class="row between">
-                <span>Eco Points</span><strong id="pointsText">300 pts</strong>
-              </div>
-              <div class="row between">
-                <span>Status</span><strong id="profileStatus">Standard</strong>
-              </div>
-            </div>
-
-            <section class="card reward-hero stack">
-              <div class="row between">
-                <div>
-                  <span class="badge dark">UniRide Rewards</span>
-                  <h2 id="rewardLevel" style="margin: 10px 0 4px">
-                    Bronze Rider
-                  </h2>
-                  <p id="rewardNext" style="margin: 0">
-                    Earn points from every campus ride.
-                  </p>
-                </div>
-                <div class="price" id="rewardPoints" style="color: white">
-                  300
-                </div>
-              </div>
-              <div class="progress" aria-label="Reward level progress">
-                <span id="rewardProgress"></span>
-              </div>
-            </section>
-
-            <section class="card stack">
-              <div class="row between">
-                <h3 style="margin: 0">Reward Missions</h3>
-                <span class="badge">Daily</span>
-              </div>
-              <div id="missionList"></div>
-            </section>
-
-            <section class="card stack">
-              <div class="row between">
-                <h3 style="margin: 0">Redeem Rewards</h3>
-                <span class="badge warn">Beta</span>
-              </div>
-              <div id="rewardList" class="reward-grid"></div>
-            </section>
-
-            <button class="btn danger" onclick="logout()" data-i18n="logout">
-              Logout
-            </button>
-          </main>
-        </div>
-      </section>
-
-      <nav id="bottomNav" class="nav">
-        <button id="navHome" class="active" onclick="showPage('homePage')">
-          <span class="ico">HOME</span>Home
-        </button>
-        <button id="navPost" onclick="showPage('postPage')">
-          <span class="ico">POST</span>Post
-        </button>
-        <button id="navStatus" onclick="showPage('statusPage')">
-          <span class="ico">RIDE</span>Status
-        </button>
-        <button id="navHistory" onclick="showPage('historyPage')">
-          <span class="ico">LOG</span>History
-        </button>
-        <button id="navProfile" onclick="showPage('profilePage')">
-          <span class="ico">ME</span>Profile
-        </button>
-      </nav>
-
-      <div id="otpModal" class="modal centered">
-        <div class="modal-box center stack">
-          <h2>Enter OTP</h2>
-          <p>The demo verification code appears at the top of the screen.</p>
-          <div id="otpError" class="error"></div>
-          <input
-            id="otpInput"
-            maxlength="4"
-            placeholder="1234"
-            style="
-              text-align: center;
-              font-size: 24px;
-              font-weight: 900;
-              letter-spacing: 10px;
-            "
-          />
-          <div class="row">
-            <button class="btn secondary" onclick="closeOtp()">Cancel</button>
-            <button class="btn" onclick="verifyOtp()">Verify</button>
-          </div>
-        </div>
+          <section id="sos" class="view sos-screen">
+            <header class="top red"><div class="top-row"><h1 style="flex:1">Emergency Assistance</h1><a class="close" href="#status">x</a></div><p class="sub">Campus route, UniMAP - Live Tracking - Trip ID: UR-2407-1030</p></header>
+            <div class="content"><section class="card sos-card"><h3 style="color:#31e985">Live Safety Preview - Location sharing active</h3><br><div class="map"><div class="marker start"></div><div class="marker car">car</div><div class="marker end"></div><small class="campus">Campus</small><small class="ktm">KTM Arau</small></div></section><section class="status-card"><span>Live trip location is being shared</span><span class="badge">Active</span></section><br><section class="status-card"><span>Trusted contact notified</span><span class="badge">Sent</span></section><br><section class="status-card"><span>Campus security available 24/7</span><span class="badge" style="color:var(--orange)">Standby</span></section><p class="label" style="margin:22px 0 12px;color:#8aa09a">EMERGENCY CONTACTS</p><div class="emergency-contact"><div>S</div><div><h3>Campus Security</h3><p class="muted">UniMAP Police</p></div><button class="call-btn" data-toast="Calling UniMAP Police...">Call</button></div><div class="emergency-contact"><div>999</div><div><h3>Emergency Services</h3><p class="muted">999 Hotline</p></div><button class="call-btn" data-toast="Calling 999 emergency hotline...">Call</button></div><div class="emergency-contact"><div>A</div><div><h3>Trusted Contact</h3><p class="muted">Ahmad (Family)</p></div><button class="call-btn" data-toast="Calling Ahmad Family...">Call</button></div><button class="btn" data-toast="Current trip shared with trusted contacts">Share Current Trip</button><br><br><button class="btn red" data-toast="Calling UniMAP Police...">Call UniMAP Police</button><br><br><button class="btn red" style="background:#fb4145" data-toast="Calling 999 emergency hotline...">Call 999</button></div>
+          </section>
+        </section>
       </div>
+      <div class="screen-label">UniRide Campus Prototype</div>
+    </main>
+    <div class="toast" id="toast"></div>
+    <script>
+      const toast = document.getElementById("toast");
+      let toastTimer;
+      let currentOtp = "";
+      let okuRequested = false;
+      let okuVerified = false;
+      let currentFare = 3;
 
-      <div id="confirmModal" class="modal">
-        <div class="modal-box stack">
-          <h2 data-i18n="confirmBooking">Confirm Booking</h2>
-          <div id="confirmContent" class="stack"></div>
-          <div class="row">
-            <button class="btn secondary" onclick="closeConfirm()">
-              Cancel
-            </button>
-            <button class="btn" onclick="confirmBooking()">
-              Confirm Booking
-            </button>
-          </div>
-        </div>
-      </div>
+      const translations = {
+        en: {
+          selected: "Language changed to English",
+          confirmLogout: "Logout from UniRide Campus?",
+          nav: ["Home", "Post", "Status", "History", "Profile"],
+          welcomeTagline: "Safe verified campus rides for UniMAP students",
+          welcomeSub: "Book trusted student rides, share trips, and travel safer around campus.",
+          getStarted: "Get Started",
+          demoLogin: "Demo Login",
+          verificationTitle: "Account Verification",
+          verificationSub: "Verify your student identity before booking rides",
+          continueOtp: "Continue to OTP",
+          otpTitle: "Phone Verification",
+          otpSub: "Enter the 6-digit code sent to",
+          otpHelp: "This helps keep UniRide safe for verified students.",
+          otpWarn: "Do not share this code with anyone.",
+          verifyContinue: "Verify & Continue",
+          homeGreeting: "Hi, Alex",
+          findRide: "Find Ride",
+          findDrivers: "Find Drivers",
+          findPassengers: "Find Passengers",
+          bookingTitle: "Confirm Booking",
+          statusTitle: "Ride Status",
+          postTitle: "Post Journey",
+          passengerPrefs: "Passenger Preferences",
+          historyTitle: "Ride History",
+          profileTitle: "Profile",
+          languageTitle: "Choose Language",
+          languageSub: "Select your preferred app language",
+          preview: "Preview",
+          previewText: "English: Find Ride<br>Bahasa Melayu: Cari Perjalanan<br>中文：寻找行程",
+          applyLanguage: "Apply Language",
+          logout: "Logout",
+          sosTitle: "Emergency Assistance"
+        },
+        bm: {
+          selected: "Bahasa Melayu telah dipilih",
+          confirmLogout: "Log keluar daripada UniRide Campus?",
+          nav: ["Utama", "Pos", "Status", "Sejarah", "Profil"],
+          welcomeTagline: "Perjalanan kampus yang selamat untuk pelajar UniMAP",
+          welcomeSub: "Tempah perjalanan pelajar yang dipercayai, kongsi perjalanan dan bergerak dengan lebih selamat di kampus.",
+          getStarted: "Mula",
+          demoLogin: "Log Masuk Demo",
+          verificationTitle: "Pengesahan Akaun",
+          verificationSub: "Sahkan identiti pelajar sebelum menempah perjalanan",
+          continueOtp: "Teruskan ke OTP",
+          otpTitle: "Pengesahan Telefon",
+          otpSub: "Masukkan kod 6 digit yang dihantar ke",
+          otpHelp: "Ini membantu memastikan UniRide selamat untuk pelajar yang disahkan.",
+          otpWarn: "Jangan kongsi kod ini dengan sesiapa.",
+          verifyContinue: "Sahkan & Teruskan",
+          homeGreeting: "Hai, Alex",
+          findRide: "Cari Perjalanan",
+          findDrivers: "Cari Pemandu",
+          findPassengers: "Cari Penumpang",
+          bookingTitle: "Sahkan Tempahan",
+          statusTitle: "Status Perjalanan",
+          postTitle: "Pos Perjalanan",
+          passengerPrefs: "Pilihan Penumpang",
+          historyTitle: "Sejarah Perjalanan",
+          profileTitle: "Profil",
+          languageTitle: "Pilih Bahasa",
+          languageSub: "Pilih bahasa aplikasi pilihan anda",
+          preview: "Pratonton",
+          previewText: "English: Find Ride<br>Bahasa Melayu: Cari Perjalanan<br>中文：寻找行程",
+          applyLanguage: "Guna Bahasa",
+          logout: "Log Keluar",
+          sosTitle: "Bantuan Kecemasan"
+        },
+        zh: {
+          selected: "已切换为华语",
+          confirmLogout: "确定要退出 UniRide Campus 吗？",
+          nav: ["首页", "发布", "状态", "记录", "我的"],
+          welcomeTagline: "为 UniMAP 学生提供安全认证的校园乘车服务",
+          welcomeSub: "预约可信学生车程、分享行程，并在校园内更安心出行。",
+          getStarted: "开始使用",
+          demoLogin: "演示登录",
+          verificationTitle: "账户验证",
+          verificationSub: "预约车程前先验证学生身份",
+          continueOtp: "继续到验证码",
+          otpTitle: "电话验证",
+          otpSub: "请输入发送到此号码的 6 位验证码",
+          otpHelp: "这能帮助 UniRide 保护已验证学生的安全。",
+          otpWarn: "请勿把验证码分享给任何人。",
+          verifyContinue: "验证并继续",
+          homeGreeting: "你好，Alex",
+          findRide: "寻找车程",
+          findDrivers: "寻找司机",
+          findPassengers: "寻找乘客",
+          bookingTitle: "确认预约",
+          statusTitle: "车程状态",
+          postTitle: "发布行程",
+          passengerPrefs: "乘客偏好",
+          historyTitle: "乘车记录",
+          profileTitle: "个人资料",
+          languageTitle: "选择语言",
+          languageSub: "选择你偏好的应用语言",
+          preview: "预览",
+          previewText: "English: Find Ride<br>Bahasa Melayu: Cari Perjalanan<br>中文：寻找行程",
+          applyLanguage: "应用语言",
+          logout: "退出登录",
+          sosTitle: "紧急援助"
+        }
+      };
 
-      <div id="sosModal" class="modal">
-        <div class="modal-box stack">
-          <h2>Emergency Assistance</h2>
+      function setText(selector, value) {
+        const element = document.querySelector(selector);
+        if (element) element.textContent = value;
+      }
 
-          <div class="card soft stack">
-            <strong>Live safety preview</strong>
-            <span id="sosLocation" class="muted"
-              >Location: Campus route, UniMAP</span
-            >
-            <span class="muted"
-              >Emergency contacts: Campus Police, 999, trusted contact</span
-            >
-            <button class="btn secondary" onclick="shareTrip()">
-              Share Current Trip
-            </button>
-          </div>
+      function setAll(selector, value) {
+        document.querySelectorAll(selector).forEach((element) => { element.textContent = value; });
+      }
 
-          <a
-            class="btn"
-            href="tel:049885555"
-            style="display: grid; place-items: center; text-decoration: none"
-            >Call UniMAP Police</a
-          >
-          <a
-            class="btn danger"
-            href="tel:999"
-            style="display: grid; place-items: center; text-decoration: none"
-            >Call 999</a
-          >
-          <button class="btn secondary" onclick="closeSos()">Close</button>
-        </div>
-      </div>
-    </div>
+      function setNavLabels(labels) {
+        document.querySelectorAll(".bottom-nav").forEach((nav) => {
+          nav.querySelectorAll(".nav-item").forEach((item, index) => {
+            const icon = item.querySelector("span")?.outerHTML || "";
+            item.innerHTML = `${icon}${labels[index] || ""}`;
+          });
+        });
+      }
 
-    <script src="js/uniride.js"></script>
+      function applyLanguage(lang, announce = false) {
+        const t = translations[lang] || translations.en;
+        localStorage.setItem("unirideLang", lang);
+        document.documentElement.lang = lang === "bm" ? "ms" : lang === "zh" ? "zh-CN" : "en";
+        document.querySelectorAll("[data-lang]").forEach((item) => item.classList.toggle("active", item.dataset.lang === lang));
+        document.querySelectorAll(".lang-check").forEach((check) => {
+          const row = check.closest("[data-lang]");
+          check.textContent = row?.dataset.lang === lang ? "✓" : "";
+        });
+        setNavLabels(t.nav);
+        setText("#welcome p strong", t.welcomeTagline);
+        const welcomeSub = document.querySelector("#welcome p:not(.mini)");
+        if (welcomeSub) welcomeSub.childNodes.forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) node.textContent = ` ${t.welcomeSub}`;
+        });
+        setText("#welcome .btn.white", t.getStarted);
+        setText("#welcome .btn.ghost", t.demoLogin);
+        setText("#verify h1", t.verificationTitle);
+        setText("#verify .sub", t.verificationSub);
+        setText("#continueOtp", t.continueOtp);
+        setText("#otp h1", t.otpTitle);
+        setText("#otp header .sub", t.otpSub);
+        setText("#otp .card.info h3", t.otpHelp);
+        setText("#otp .card.info .muted", t.otpWarn);
+        setText("#verifyOtp", t.verifyContinue);
+        setText("#home h1", t.homeGreeting);
+        setAll("#home .route-card .btn", t.findRide);
+        setAll("#home .seg .btn:first-child", t.findDrivers);
+        setAll("#home .seg .btn:last-child", t.findPassengers);
+        setText("#booking h1", t.bookingTitle);
+        setText("#status h1", t.statusTitle);
+        setAll("#post-driver h1, #post-passenger h1", t.postTitle);
+        setText("#post-passenger .card h3", t.passengerPrefs);
+        setText("#history h1", t.historyTitle);
+        setText("#profile .top-row .sub", t.profileTitle);
+        setText("#language h1", t.languageTitle);
+        setText("#language .sub", t.languageSub);
+        setText("#languagePreviewTitle", t.preview);
+        const languagePreview = document.getElementById("languagePreview");
+        if (languagePreview) languagePreview.innerHTML = t.previewText;
+        setText("#applyLanguageBtn", t.applyLanguage);
+        setText("#logoutBtn", t.logout);
+        setText("#sos h1", t.sosTitle);
+        if (announce) showToast(t.selected);
+      }
+      const campusPoints = {
+        "UniMAP Pauh Putra Main Campus": { x: 0, y: 0 },
+        "UniMAP Main Gate": { x: 1.2, y: 0.4 },
+        "Library": { x: 0.5, y: 0.9 },
+        "Dormitory A": { x: 2.1, y: 1.4 },
+        "Student Centre": { x: 0.8, y: 1.7 },
+        "Engineering Faculty": { x: 1.6, y: 2.3 },
+        "KTM Arau Train Station": { x: 5.6, y: 1.2 },
+        "Kangar Town": { x: 9.8, y: 3.8 }
+      };
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
+      }
+
+      function generateOtp() {
+        currentOtp = String(Math.floor(100000 + Math.random() * 900000));
+        const code = document.getElementById("otpCode");
+        if (code) code.textContent = currentOtp;
+        document.querySelectorAll(".otp-input").forEach((input) => {
+          input.value = "";
+          input.classList.remove("filled");
+        });
+        const error = document.getElementById("otpError");
+        if (error) error.style.display = "none";
+      }
+
+      function validateOkuForm() {
+        if (!okuRequested) return true;
+        const fields = [...document.querySelectorAll(".oku-required")];
+        const filled = fields.every((field) => field.value.trim().length > 0);
+        if (!filled) {
+          showToast("Please complete OKU details to receive 50% discount");
+          return false;
+        }
+        okuVerified = true;
+        document.body.classList.add("oku-verified");
+        const fare = document.getElementById("bookingFare");
+        if (fare) fare.textContent = "RM 1.50";
+        showToast("OKU verified. 50% discount activated");
+        return true;
+      }
+
+      function validateStudentIdentity() {
+        const identityInput = document.getElementById("studentIdentity");
+        const identity = identityInput?.value.trim().toLowerCase() || "";
+        const idValid = /^\d{9}$/.test(identity);
+        const emailValid = /^\d{9}@studentmail\.unimap\.edu\.my$/.test(identity);
+
+        if (idValid || emailValid) return true;
+
+        showToast("Use 9-digit UniMAP ID or studentmail email");
+        identityInput?.focus();
+        return false;
+      }
+
+      function updateDiscountDisplay() {
+        document.body.classList.toggle("oku-verified", okuVerified);
+        const fare = document.getElementById("bookingFare");
+        const shownFare = okuVerified ? currentFare * 0.5 : currentFare;
+        if (fare) fare.textContent = `RM ${shownFare.toFixed(2)}`;
+        const smallFare = document.getElementById("estimateFareSmall");
+        if (smallFare) smallFare.textContent = `RM ${shownFare.toFixed(2)}`;
+      }
+
+      function updateRouteEstimate() {
+        const departure = document.getElementById("departureSelect")?.value;
+        const destination = document.getElementById("destinationSelect")?.value;
+        if (!departure || !destination) return;
+
+        if (departure === destination) {
+          showToast("Please choose a different destination");
+          currentFare = 0;
+        } else {
+          const a = campusPoints[departure];
+          const b = campusPoints[destination];
+          const straight = Math.hypot(a.x - b.x, a.y - b.y);
+          const distance = Math.max(1.2, straight * 1.15);
+          const minutes = Math.max(5, Math.round(distance * 2.1));
+          currentFare = Math.max(2, 1.2 + distance * 0.3);
+
+          document.getElementById("estimateDistance").textContent = `${distance.toFixed(1)} km`;
+          document.getElementById("estimateTime").textContent = `${minutes} min`;
+          document.getElementById("fareDistanceText").textContent = `${distance.toFixed(1)} km`;
+          document.getElementById("baseFareText").textContent = `RM ${(currentFare - 0.5).toFixed(2)}`;
+        }
+
+        updateDiscountDisplay();
+      }
+
+      document.addEventListener("click", (event) => {
+        const continueOtp = event.target.closest("#continueOtp");
+        if (continueOtp) {
+          event.preventDefault();
+          if (!validateStudentIdentity()) return;
+          if (!validateOkuForm()) return;
+          location.hash = "otp";
+          setTimeout(generateOtp, 40);
+          return;
+        }
+
+        const verifyOtp = event.target.closest("#verifyOtp");
+        if (verifyOtp) {
+          event.preventDefault();
+          const typed = [...document.querySelectorAll(".otp-input")].map((input) => input.value.trim()).join("");
+          const error = document.getElementById("otpError");
+          if (typed === currentOtp) {
+            if (error) error.style.display = "none";
+            showToast("Phone verified successfully");
+            location.hash = "home";
+          } else {
+            if (error) error.style.display = "block";
+            showToast("Wrong OTP. Please try again");
+          }
+          return;
+        }
+
+        const logout = event.target.closest("#logoutBtn");
+        if (logout) {
+          event.preventDefault();
+          const t = translations[localStorage.getItem("unirideLang") || "en"] || translations.en;
+          if (confirm(t.confirmLogout)) {
+            localStorage.removeItem("unirideLoggedIn");
+            window.location.href = window.location.href.split("#")[0];
+          }
+          return;
+        }
+
+        const languageChoice = event.target.closest("[data-lang]");
+        if (languageChoice) {
+          event.preventDefault();
+          applyLanguage(languageChoice.dataset.lang, true);
+          return;
+        }
+
+        const target = event.target.closest("[data-toast]");
+        if (!target) return;
+        showToast(target.dataset.toast);
+
+        if (target.id === "okuToggle") {
+          okuRequested = target.classList.toggle("active");
+          document.getElementById("okuForm")?.classList.toggle("open", okuRequested);
+        if (!okuRequested) {
+            okuVerified = false;
+            updateDiscountDisplay();
+          }
+          return;
+        }
+
+        if (target.classList.contains("pref-row")) {
+          target.classList.toggle("active");
+          return;
+        }
+
+        const group = target.closest(".chips, .seg");
+        if (group) {
+          group.querySelectorAll(".active").forEach((item) => item.classList.remove("active"));
+          target.classList.add("active");
+        }
+      });
+
+      document.addEventListener("input", (event) => {
+        const input = event.target.closest(".otp-input");
+        if (input) {
+          input.value = input.value.replace(/\D/g, "").slice(0, 1);
+          input.classList.toggle("filled", input.value.length > 0);
+          if (input.value && input.nextElementSibling?.classList.contains("otp-input")) {
+            input.nextElementSibling.focus();
+          }
+          return;
+        }
+
+        const identity = event.target.closest("#studentIdentity");
+        if (identity && /^\d+$/.test(identity.value)) {
+          identity.value = identity.value.slice(0, 9);
+        }
+      });
+
+      document.addEventListener("change", (event) => {
+        if (event.target.closest(".route-select")) {
+          updateRouteEstimate();
+        }
+      });
+
+      window.addEventListener("hashchange", () => {
+        applyLanguage(localStorage.getItem("unirideLang") || "en");
+      if (location.hash === "#otp") generateOtp();
+        if (location.hash === "#booking") updateRouteEstimate();
+        updateDiscountDisplay();
+      });
+
+      applyLanguage(localStorage.getItem("unirideLang") || "en");
+      if (location.hash === "#otp") generateOtp();
+      if (location.hash === "#booking") updateRouteEstimate();
+      updateDiscountDisplay();
+    </script>
   </body>
 </html>
+
+
+
+
+
+
+
+
